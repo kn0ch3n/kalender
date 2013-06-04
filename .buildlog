@@ -25,3 +25,81 @@ build.dart --machine --removed=test.txt
 Total time                                                   --  22 ms
 build.dart finished [370 ms]
 
+---
+build.dart --machine --changed=web/out/kalender.css --changed=web/out/kalender.dart --changed=web/out/kalender....
+Total time                                                   --  24 ms
+build.dart finished [372 ms]
+
+---
+build.dart --machine --full
+[{"method":"mapping","params":{"from":"web/kalender.html","to":"web/out/kalender.html"}}]
+Total time spent on web/kalender.html                        -- 417 ms
+Total time                                                   -- 457 ms
+build.dart finished [1257 ms]
+
+---
+build.dart --machine --changed=web/out/kalender.css --changed=web/out/kalender.dart --changed=web/out/kalender....
+Total time                                                   --  35 ms
+build.dart finished [611 ms]
+
+---
+build.dart --machine --changed=web/kalender.dart
+[{"method":"mapping","params":{"from":"web/kalender.html","to":"web/out/kalender.html"}}]
+Total time spent on web/kalender.html                        -- 375 ms
+Total time                                                   -- 403 ms
+build.dart finished [758 ms]
+
+---
+build.dart --machine --changed=web/out/kalender.css --changed=web/out/kalender.dart --changed=web/out/kalender....
+Total time                                                   --  23 ms
+build.dart finished [400 ms]
+
+---
+build.dart --machine --changed=web/kalender.html
+[{"method":"mapping","params":{"from":"web/kalender.html","to":"web/out/kalender.html"}}]
+[{"method":"warning","params":{"file":"web/kalender.html","message":"custom element with tag name x-click-counter not found.","line":17,"charStart":274,"charEnd":345}}]
+Total time spent on web/kalender.html                        -- 241 ms
+Total time                                                   -- 269 ms
+build.dart finished [624 ms]
+
+---
+build.dart --machine --changed=web/out/kalender.css --changed=web/out/kalender.dart --changed=web/out/kalender....
+Total time                                                   --  23 ms
+build.dart finished [386 ms]
+
+---
+build.dart --machine --changed=web/kalender.html
+[{"method":"mapping","params":{"from":"web/kalender.html","to":"web/out/kalender.html"}}]
+Total time spent on web/kalender.html                        -- 225 ms
+Total time                                                   -- 253 ms
+build.dart finished [611 ms]
+
+---
+build.dart --machine --changed=web/out/kalender.css --changed=web/out/kalender.dart --changed=web/out/kalender....
+Total time                                                   --  24 ms
+build.dart finished [385 ms]
+
+---
+build.dart --machine --removed=web/xclickcounter.html
+[{"method":"mapping","params":{"from":"web/kalender.html","to":"web/out/kalender.html"}}]
+Total time spent on web/kalender.html                        -- 221 ms
+Total time                                                   -- 248 ms
+build.dart finished [609 ms]
+
+---
+build.dart --machine --changed=web/out/kalender.css --changed=web/out/kalender.dart --changed=web/out/kalender....
+Total time                                                   --  21 ms
+build.dart finished [406 ms]
+
+---
+build.dart --machine --removed=web/xclickcounter.dart
+[{"method":"mapping","params":{"from":"web/kalender.html","to":"web/out/kalender.html"}}]
+Total time spent on web/kalender.html                        -- 236 ms
+Total time                                                   -- 264 ms
+build.dart finished [625 ms]
+
+---
+build.dart --machine --changed=web/out/kalender.css --changed=web/out/kalender.dart --changed=web/out/kalender....
+Total time                                                   --  24 ms
+build.dart finished [388 ms]
+
