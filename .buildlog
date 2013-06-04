@@ -1,0 +1,27 @@
+---
+build.dart --machine --full
+[{"method":"mapping","params":{"from":"web/kalender.html","to":"web/out/kalender.html"}}]
+Total time spent on web/kalender.html                        -- 356 ms
+Total time                                                   -- 384 ms
+build.dart finished [846 ms]
+
+---
+build.dart --machine --changed=web/out/kalender.css --changed=web/out/kalender.dart --changed=web/out/kalender....
+Total time                                                   --  26 ms
+build.dart finished [577 ms]
+
+---
+build.dart --machine --changed=README.md
+Total time                                                   --  22 ms
+build.dart finished [377 ms]
+
+---
+build.dart --machine --changed=test.txt
+Total time                                                   --  22 ms
+build.dart finished [374 ms]
+
+---
+build.dart --machine --removed=test.txt
+Total time                                                   --  22 ms
+build.dart finished [370 ms]
+
