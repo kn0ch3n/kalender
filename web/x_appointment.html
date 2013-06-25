@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <link rel="import" href="package:widget/components/accordion.html">
+    <link rel="import" href="package:widget/components/collapse.html">
+  </head>
+  <body>
+    <element name="x-appointment" extends="div" constructor="XAppointment">
+      <template>
+        <x-accordion class="day-column">
+          <x-collapse>
+            <div class="accordion-heading">
+              <a class="accordion-toggle" data-toggle="collapse">
+                {{heading}} <input type="text" placeholder="Name" bind-value="name">
+              </a>
+            </div>
+            <input type="tel" placeholder="Nummer" bind-value="number">
+            <select>
+              <option>Frei</option>
+              <option>Werkstatt</option>
+              <option>Nicht im Haus</option>
+              <option>Einlagen</option>
+              <option>Einlagen Folge</option>
+            </select>
+          </x-collapse>
+        </x-accordion>
+      </template>
+      <script type="application/dart" src='x_appointment.dart'></script>
+    </element>
+  </body>
+</html>
