@@ -66,6 +66,7 @@ h3 {
   padding: 2px;
   cursor: pointer;
   font-family: courier;
+  display: inline-block;
 }
 .accordion-inner {
   padding: 2px;

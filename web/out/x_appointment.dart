@@ -27,7 +27,7 @@ class XAppointment extends WebComponent {
         <div is="x-accordion" class="day-column">
           <div is="x-collapse">
             <div class="accordion-heading">
-              <a class="accordion-toggle" data-toggle="collapse" style="display:inline-block;"></a> <input type="text" style="display:inline-block;">
+              <a class="accordion-toggle" data-toggle="collapse"></a> <input type="text">
             </div>
             <input type="tel" placeholder="Nummer">
             <select>
