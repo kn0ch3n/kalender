@@ -9,6 +9,7 @@ import 'package:widget/widget.dart';
 class XAppointment extends WebComponent {
   
   static Map<DateTime, XAppointment> _cache;
+  
   DateTime _time;
   String get heading => timeForHeading(_time);
   String name;
@@ -29,7 +30,7 @@ class XAppointment extends WebComponent {
   }
 
   XAppointment._internal(DateTime time) {
-    host = (new Element.html('<x-appointment time="{{$time}}"></x-appointment>'));
+    host = (new Element.html('<x-appointment time="$time"></x-appointment>'));
     this._time = time;
   }
   
@@ -40,5 +41,9 @@ class XAppointment extends WebComponent {
     minute = minute.length > 1 ? minute : "0" + minute;
     
     return hour + ":" + minute;
+  }
+  
+  printChanged() {
+    print("Name changed to: " + name);
   }
 }

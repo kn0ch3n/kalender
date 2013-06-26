@@ -10,9 +10,9 @@
         <x-accordion class="day-column">
           <x-collapse>
             <div class="accordion-heading">
-              <a class="accordion-toggle" data-toggle="collapse">
-                {{heading}} <input type="text" placeholder="Name" bind-value="name">
-              </a>
+              <a class="accordion-toggle" data-toggle="collapse" style="display:inline-block;">
+                {{heading}}
+              </a> <input type="text" bind-value="name" on-change="printChanged()" style="display:inline-block;">
             </div>
             <input type="tel" placeholder="Nummer" bind-value="number">
             <select>

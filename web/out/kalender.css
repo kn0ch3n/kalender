@@ -7,44 +7,61 @@ body {
   font-size: 14px;
   font-weight: normal;
   line-height: 1.2em;
-  margin: 15px;
+  margin: 6px;
 }
 h1, p {
   color: #333;
 }
-#sidebar {
+.sidebar {
+  position: fixed;
+  vertical-align: top;
+  border-style: solid;
+  border-width: 1px;
+  border-color: #DDD;
   width: 200px;
-  height: 100%;
   float: left;
-  overflow-x: auto;
+  height: 100%;
   display: inline-block;
 }
 .day-columns {
-  width: 6000px;
+  width: 8000px;
   height: 100%;
   position: relative;
   border: 1px solid #ccc;
   background-color: #fff;
-  float: left;
   overflow-x: auto;
   display: inline-block;
 }
 .day-column {
   vertical-align: top;
-  border-style: solid;
-  border-width: 1px;
-  border-color: #DDD;
   width: 250px;
-  height: fill_parent;
+  float: left;
+  height: 100%;
   display: inline-block;
 }
-.accordion-heading {
-  cursor: pointer;
+input, input[type="text"], input[type="tel"], select {
+  width: 160px;
+  margin: 2px;
+  padding: 0px;
 }
 select {
-  width: 160px;
+  height: 24px;
 }
-input {
-  width: 160px;
+textarea {
+  width: 180px;
+  resize: vertical;
+}
+h3 {
+  margin: 2px;
+  line-height: 30px;
+}
+.accordion-heading .accordion-toggle {
+  padding: 2px;
+  cursor: pointer;
+  font-family: courier;
+}
+.accordion-inner {
+  padding: 2px;
+  padding-left: 48px;
 }
 

@@ -10,6 +10,7 @@ import 'package:web_ui/observe/observable.dart' as __observe;
 import 'dart:html';
 import 'package:web_ui/web_ui.dart';
 import 'x_appointment.dart';
+import 'x_pause.dart';
 
 
 // Original code
@@ -21,7 +22,7 @@ void main() {
   //useShadowDom = true;
   termineDiv = query("#termine");
 
-  for(int i = 1; i <= 19; i++) {
+  for(int i = 1; i <= 31; i++) {
     var id = i.toString().length > 1 ? i.toString() : "0" + i.toString();
     var parent = query("#termine_$id");
     
@@ -43,9 +44,7 @@ void appointmentCreator(DateTime time, var parent){
 }
 
 void pauseCreator(DateTime time, var parent){
-  //TODO change this to mittagspause
-  var obj = new XAppointment(time)
-    ..name = "Mittagspause";
+  var obj = new XPause(time);
   var lifecycleCaller = new ComponentItem(obj)..create();
   parent.children.add(obj.host);
   lifecycleCaller.insert();
