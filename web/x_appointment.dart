@@ -44,6 +44,6 @@ class XAppointment extends WebComponent {
   }
   
   printChanged() {
-    print("Name changed to: " + name);
+    print("Name of $_time changed to: $name");
   }
 }

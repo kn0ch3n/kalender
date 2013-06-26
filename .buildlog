@@ -8554,3 +8554,66 @@ build.dart --machine --changed=web/kalender.css
 Total time                                                   -- 581 ms
 build.dart finished [782 ms]
 
+---
+build.dart --machine --changed=web/x_pause.dart
+Total time spent on web/kalender.html                        -- 1601 ms
+[{"method":"generated","params":{"file":"web/out/_from_packages/widget/components/accordion.dart.map"}}]
+[{"method":"generated","params":{"file":"web/out/x_appointment.dart"}}]
+[{"method":"generated","params":{"file":"web/out/kalender.html_bootstrap.dart"}}]
+[{"method":"mapping","params":{"from":"web/kalender.html","to":"web/out/kalender.html"}}]
+[{"method":"generated","params":{"file":"web/out/kalender.html"}}]
+[{"method":"generated","params":{"file":"web/out/x_pause.dart.map"}}]
+[{"method":"generated","params":{"file":"web/out/kalender.css"}}]
+[{"method":"generated","params":{"file":"web/out/x_appointment.dart.map"}}]
+[{"method":"generated","params":{"file":"web/out/_from_packages/widget/components/accordion.dart"}}]
+[{"method":"generated","params":{"file":"web/out/x_pause.dart"}}]
+[{"method":"generated","params":{"file":"web/out/_from_packages/widget/components/collapse.dart.map"}}]
+[{"method":"generated","params":{"file":"web/out/kalender.dart.map"}}]
+[{"method":"generated","params":{"file":"web/out/kalender.dart"}}]
+[{"method":"generated","params":{"file":"web/out/bootstrap.css"}}]
+[{"method":"generated","params":{"file":"web/out/_from_packages/widget/components/collapse.dart"}}]
+Total time                                                   -- 2206 ms
+build.dart finished [2450 ms]
+
+---
+build.dart --machine --changed=web/x_pause.dart
+Total time spent on web/kalender.html                        -- 1544 ms
+[{"method":"generated","params":{"file":"web/out/_from_packages/widget/components/accordion.dart.map"}}]
+[{"method":"generated","params":{"file":"web/out/x_appointment.dart"}}]
+[{"method":"generated","params":{"file":"web/out/kalender.html_bootstrap.dart"}}]
+[{"method":"mapping","params":{"from":"web/kalender.html","to":"web/out/kalender.html"}}]
+[{"method":"generated","params":{"file":"web/out/kalender.html"}}]
+[{"method":"generated","params":{"file":"web/out/x_pause.dart.map"}}]
+[{"method":"generated","params":{"file":"web/out/kalender.css"}}]
+[{"method":"generated","params":{"file":"web/out/x_appointment.dart.map"}}]
+[{"method":"generated","params":{"file":"web/out/_from_packages/widget/components/accordion.dart"}}]
+[{"method":"generated","params":{"file":"web/out/x_pause.dart"}}]
+[{"method":"generated","params":{"file":"web/out/_from_packages/widget/components/collapse.dart.map"}}]
+[{"method":"generated","params":{"file":"web/out/kalender.dart.map"}}]
+[{"method":"generated","params":{"file":"web/out/kalender.dart"}}]
+[{"method":"generated","params":{"file":"web/out/bootstrap.css"}}]
+[{"method":"generated","params":{"file":"web/out/_from_packages/widget/components/collapse.dart"}}]
+Total time                                                   -- 2130 ms
+build.dart finished [2348 ms]
+
+---
+build.dart --machine --changed=web/x_appointment.dart
+Total time spent on web/kalender.html                        -- 1898 ms
+[{"method":"generated","params":{"file":"web/out/_from_packages/widget/components/accordion.dart.map"}}]
+[{"method":"generated","params":{"file":"web/out/x_appointment.dart"}}]
+[{"method":"generated","params":{"file":"web/out/kalender.html_bootstrap.dart"}}]
+[{"method":"mapping","params":{"from":"web/kalender.html","to":"web/out/kalender.html"}}]
+[{"method":"generated","params":{"file":"web/out/kalender.html"}}]
+[{"method":"generated","params":{"file":"web/out/x_pause.dart.map"}}]
+[{"method":"generated","params":{"file":"web/out/kalender.css"}}]
+[{"method":"generated","params":{"file":"web/out/x_appointment.dart.map"}}]
+[{"method":"generated","params":{"file":"web/out/_from_packages/widget/components/accordion.dart"}}]
+[{"method":"generated","params":{"file":"web/out/x_pause.dart"}}]
+[{"method":"generated","params":{"file":"web/out/_from_packages/widget/components/collapse.dart.map"}}]
+[{"method":"generated","params":{"file":"web/out/kalender.dart.map"}}]
+[{"method":"generated","params":{"file":"web/out/kalender.dart"}}]
+[{"method":"generated","params":{"file":"web/out/bootstrap.css"}}]
+[{"method":"generated","params":{"file":"web/out/_from_packages/widget/components/collapse.dart"}}]
+Total time                                                   -- 2602 ms
+build.dart finished [2835 ms]
+

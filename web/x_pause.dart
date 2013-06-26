@@ -42,4 +42,8 @@ class XPause extends WebComponent {
     
     return hour + ":" + minute;
   }
+
+  printChanged() {
+    print("Name of $_time changed to: $name");
+  }
 }
