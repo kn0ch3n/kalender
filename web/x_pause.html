@@ -1,0 +1,24 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <link rel="import" href="package:widget/components/accordion.html">
+    <link rel="import" href="package:widget/components/collapse.html">
+  </head>
+  <body>
+    <element name="x-pause" extends="div" constructor="XPause">
+      <template>
+        <x-accordion class="day-column">
+          <x-collapse>
+            <div class="accordion-heading">
+              <a class="accordion-toggle" data-toggle="collapse" style="display:inline-block;">
+                {{heading}}
+              </a> <input type="text" placeholder="Mittagspause" bind-value="name" on-change="printChanged()" style="display:inline-block;">
+            </div>
+            <textarea rows="3"></textarea>
+          </x-collapse>
+        </x-accordion>
+      </template>
+      <script type="application/dart" src='x_pause.dart'></script>
+    </element>
+  </body>
+</html>
