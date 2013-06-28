@@ -7,7 +7,7 @@ body {
   font-size: 14px;
   font-weight: normal;
   line-height: 1.2em;
-  margin: 6px;
+  margin: 0px;
 }
 h1, p {
   color: #333;
@@ -24,10 +24,7 @@ h1, p {
   float: left;
   height: 100%;
   display: inline-block;
-  margin-left: -6px;
   padding-left: 6px;
-  margin-top: -6px;
-  padding-top: 6px;
 }
 .day-columns {
   margin-left: 200px;
@@ -71,5 +68,11 @@ h3 {
 x-appointment .accordion-inner {
   padding: 2px;
   padding-left: 48px;
+}
+.footer {
+  width: 200px;
+  position: fixed;
+  bottom: 0px;
+  background-color: #F8F8F8;
 }
 

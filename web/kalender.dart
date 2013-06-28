@@ -12,7 +12,7 @@ DivElement termineDiv;
 
 void main() {
   //useShadowDom = true;
-  TextAreaElement statusElem = query('#status-area');
+  ParagraphElement statusElem = query('#status-area');
   statusArea = new StatusArea(statusElem);
   
   kalenderConnection = new KalenderConnection("ws://127.0.0.1:1337/ws");
@@ -23,7 +23,6 @@ void main() {
 void setupUI() {
   termineDiv = query("#termine");
   
-
   for(int i = 1; i <= 31; i++) {
     var id = i.toString().length > 1 ? i.toString() : "0" + i.toString();
     var parent = query("#termine_$id");

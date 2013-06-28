@@ -63,15 +63,15 @@ class KalenderConnection {
 }
 
 
-class StatusArea extends View<TextAreaElement> {
-  StatusArea(TextAreaElement elem) : super(elem);
+class StatusArea extends View<ParagraphElement> {
+  StatusArea(ParagraphElement elem) : super(elem);
 
   displayMessage(String msg, String from) {
     _display("$from: $msg\n");
   }
 
   displayNotice(String notice) {
-    _display("[system]: $notice\n");
+    _display("Server status: $notice\n");
   }
 
   _display(String str) {

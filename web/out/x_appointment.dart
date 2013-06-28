@@ -64,6 +64,7 @@ class XAppointment extends WebComponent {
     __t.listen(__e2.onInput, ($event) { name = __e2.value; });
     __t.oneWayBind(() => name, (e) { if (__e2.value != e) __e2.value = e; }, false, false);
     __e3 = __e4.nodes[3];
+    __t.listen(__e3.onChange, ($event) { printChanged(); });
     __t.listen(__e3.onInput, ($event) { number = __e3.value; });
     __t.oneWayBind(() => number, (e) { if (__e3.value != e) __e3.value = e; }, false, false);
     __t.component(new Collapse()..host = __e4);
