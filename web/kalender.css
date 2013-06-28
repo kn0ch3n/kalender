@@ -59,7 +59,7 @@ select {
 }
 
 textarea {
-  width: 180px;
+  width: 200px;
   resize:vertical;
 }
 
@@ -75,7 +75,7 @@ h3 {
   display: inline-block;
 }
 
-.accordion-inner {
+x-appointment .accordion-inner {
   padding: 2px;
   padding-left: 48px;
 }

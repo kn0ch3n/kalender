@@ -5,6 +5,7 @@ import 'package:web_ui/web_ui.dart';
 import 'package:widget/components/accordion.dart';
 import 'package:widget/effects.dart';
 import 'package:widget/widget.dart';
+import 'kalender_connection.dart';
 
 class XAppointment extends WebComponent {
   
@@ -14,10 +15,17 @@ class XAppointment extends WebComponent {
   String get heading => timeForHeading(_time);
   String name;
   String number;
+  static KalenderConnection connection;
 
-  factory XAppointment(DateTime time) {
+  factory XAppointment(DateTime time, KalenderConnection kalenderConnection) {
     if (_cache == null) {
       _cache = new Map();
+    }
+    if (connection == null) {
+      connection = kalenderConnection;
+    }
+    if (connection != kalenderConnection) {
+      print("connection != kalenderConnection... weird, that should not happen!");
     }
 
     if (_cache.containsKey(time)) {
@@ -44,6 +52,7 @@ class XAppointment extends WebComponent {
   }
   
   printChanged() {
-    print("Name of $_time changed to: $name");
+    connection.send(_time, name, number);
+    statusArea.displayMessage(_time.toString(), "TODO: id");
   }
 }
