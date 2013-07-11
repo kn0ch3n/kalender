@@ -68,8 +68,15 @@ textarea {
 h3 {
   margin: 2px;
   font-family: courier;
-  color: #8D8D8D;
   font-size: 16px;
+}
+
+.before {
+  color: #CECECE;
+}
+
+.after {
+  color: black;
 }
 
 .clickable {

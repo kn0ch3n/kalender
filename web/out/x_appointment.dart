@@ -97,7 +97,7 @@ class XAppointment extends WebComponent with Observable  {
 
   /** Original code from the component. */
 
-  
+  static List<XAppointment> dirtyAppointments = new List<XAppointment>();
   static KalenderConnection connection;
   String id;
   
@@ -146,7 +146,7 @@ class XAppointment extends WebComponent with Observable  {
       'number': null,
       'type': 0
     });
-    print("XAppointment cleared: " + time.toString());
+    //print("XAppointment cleared: " + time.toString());
   }
   
   String timeForHeading(DateTime t) {
@@ -167,6 +167,7 @@ class XAppointment extends WebComponent with Observable  {
   }
   
   valueChanged() {
+    dirtyAppointments.add(this);
     connection.send(time, _data);
     statusArea.displaySaveMessage(headingWithDate, _data);
   }

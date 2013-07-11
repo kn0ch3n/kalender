@@ -30,12 +30,9 @@ class KalenderConnection {
   }
 
   _receivedEncodedMessage(String encodedMessage) {
-    print("Received encoded message: $encodedMessage");
     var message = JSON.parse(encodedMessage);
     if(message is List) {
-      print("got a list: $message");
-
-      clearAllXAppointments();
+      print("Received a list (a whole month): $message");
       
       message.forEach((a) {
         xappointments.where((x) => x.time == DateTime.parse(a['time']))
@@ -43,11 +40,13 @@ class KalenderConnection {
             x.name = a['data']['name'];
             x.number = a['data']['number'];
             x.type = a['data']['type'];
+            XAppointment.dirtyAppointments.add(x);
         });
       });
     }
+    
     if(message is Map) {
-      print("got a map: $message");
+      print("Received a map (a single appointment): $message");
       
       print("${message['time'].substring(0, 7)} == $yearAndMonth");
       
@@ -57,6 +56,7 @@ class KalenderConnection {
           x.name = message['data']['name'];
           x.number = message['data']['number'];
           x.type = message['data']['type'];
+          XAppointment.dirtyAppointments.add(x);
         });
       }
     }
@@ -93,7 +93,6 @@ class KalenderConnection {
     webSocket.onError.listen((e) => scheduleReconnect());
 
     webSocket.onMessage.listen((MessageEvent e) {
-      print('received message ${e.data}');
       _receivedEncodedMessage(e.data);
     });
   }
@@ -109,7 +108,7 @@ class StatusArea extends View<ParagraphElement> {
   }
   
   displaySaveMessage(String time, Map data){
-    elem.text = "Eintrag gespeichert! $time - $data";
+    //elem.text = "Eintrag gespeichert! $time - $data"; //that's not how it works =/
   }
 
   _display(String str) {

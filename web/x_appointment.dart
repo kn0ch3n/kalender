@@ -8,7 +8,7 @@ import 'package:widget/widget.dart';
 import 'kalender_connection.dart';
 
 class XAppointment extends WebComponent {
-  
+  static List<XAppointment> dirtyAppointments = new List<XAppointment>();
   static KalenderConnection connection;
   String id;
   
@@ -44,7 +44,7 @@ class XAppointment extends WebComponent {
       'number': null,
       'type': 0
     });
-    print("XAppointment cleared: " + time.toString());
+    //print("XAppointment cleared: " + time.toString());
   }
   
   String timeForHeading(DateTime t) {
@@ -65,6 +65,7 @@ class XAppointment extends WebComponent {
   }
   
   valueChanged() {
+    dirtyAppointments.add(this);
     connection.send(time, _data);
     statusArea.displaySaveMessage(headingWithDate, _data);
   }
