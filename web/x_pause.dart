@@ -5,33 +5,28 @@ import 'package:web_ui/web_ui.dart';
 import 'package:widget/components/accordion.dart';
 import 'package:widget/effects.dart';
 import 'package:widget/widget.dart';
+import 'kalender_connection.dart';
 
 class XPause extends WebComponent {
+  static List<XPause> dirtyPauses = new List<XPause>();
+  static KalenderConnection connection;
   
-  static Map<DateTime, XPause> _cache;
+  DateTime time;
+  String get heading => timeForHeading(time);
+
+  @observable Map _data;
+  String get name => _data['name'];
+  set name(value) => _data['name'] = value;
+  String get text => _data['text'];
+  set text(value) => _data['text'] = value;
   
-  DateTime _time;
-  String get heading => timeForHeading(_time);
-  String name;
-  String text;
-
-  factory XPause(DateTime time) {
-    if (_cache == null) {
-      _cache = new Map();
-    }
-
-    if (_cache.containsKey(time)) {
-      return _cache[time];
-    } else {
-      final pause = new XPause._internal(time);
-      _cache[time] = pause;
-      return pause;
-    }
-  }
-
-  XPause._internal(DateTime time) {
-    host = (new Element.html('<x-pause time="$time"></x-pause>'));
-    this._time = time;
+  XPause(DateTime time) {
+    host = (new Element.html('<x-pause></x-pause>'));
+    this.time = time;
+    _data = toObservable({
+      'name': null,
+      'text': null
+    });
   }
   
   String timeForHeading(DateTime t) {
@@ -43,7 +38,8 @@ class XPause extends WebComponent {
     return hour + ":" + minute;
   }
 
-  printChanged() {
-    print("Name of $_time changed to: $name");
+  valueChanged() {
+    dirtyPauses.add(this);
+    connection.send(time, _data);
   }
 }

@@ -36,6 +36,7 @@ String yearAndMonth;
 int maxDays = 31;
 
 List<XAppointment> xappointments = new List<XAppointment>();
+List<XPause> xpauses = new List<XPause>();
 
 void main() {
   //useShadowDom = true;
@@ -44,6 +45,7 @@ void main() {
   
   kalenderConnection = new KalenderConnection("ws://127.0.0.1:1337/ws");
   XAppointment.connection = kalenderConnection;
+  XPause.connection = kalenderConnection;
   
   selectedDate = toDateString(new DateTime.now());
   setupUI();
@@ -72,12 +74,12 @@ void setupUI() {
     if (column != null) {
       for (int h = 8; h <= 17; h++) {
         for (int m = 0; m <= 40; m += 20) {
-          if (h == 12 && m == 0) pauseCreator(new DateTime(2013, 6, i, h, m), column);
-          if (h == 12 || h == 13) continue;
           DateTime t = new DateTime(
               int.parse(selectedDate.substring(0, 4)),
               int.parse(selectedDate.substring(5, 7)),
               i, h, m);
+          if (h == 12 && m == 0) xpauses.add(pauseCreator(t, column));
+          if (h == 12 || h == 13) continue;
           String id = i > 9 ? i.toString() : "0" + i.toString();
           int x = ((h-8)*3 + (m/20) + 1).toInt();
           id += x > 9 ? x.toString() : "0" + x.toString();
@@ -98,11 +100,12 @@ XAppointment appointmentCreator(DateTime time, String id, var parent) {
   return obj;
 }
 
-void pauseCreator(DateTime time, var parent) {
+XPause pauseCreator(DateTime time, var parent) {
   var obj = new XPause(time);
   var lifecycleCaller = new ComponentItem(obj)..create();
   parent.children.add(obj.host);
   lifecycleCaller.insert();
+  return obj;
 }
 
 void dateChanged() {
@@ -152,6 +155,11 @@ void dateChanged() {
       x.time = DateTime.parse(selectedDate.substring(0, 7) + x.time.toString().substring(7));
     }
 
+    // Change the times of the XPause instances
+    for (XPause x in xpauses) {
+      x.time = DateTime.parse(selectedDate.substring(0, 7) + x.time.toString().substring(7));
+    }
+
     // resize #termine
     query("#termine").style.width = "${daysInMonth * 250}px}";
     // request this months appointments
@@ -192,9 +200,9 @@ int toDaysInMonth(String dateString) {
       return 29;
     }
     return 28;
-  } else if(m == "01" || m == "03" || m == "05" || m == "07" || m == "08" || m == "10" || m == "12") {
-    return 31;
-  } else return 30;
+  } else if(m == "04" || m == "06" || m == "09" || m == "11") {
+    return 30;
+  } else return 31;
 }
 
 // Additional generated code
