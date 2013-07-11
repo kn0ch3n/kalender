@@ -26,12 +26,17 @@ h1, p {
   padding-left: 6px;
 }
 
+.invisible {
+  display: none;
+}
+
 .day-columns {
   margin-left: 208px;
+  padding-left: 72px;
+  padding-right: 72px;
   width: 8000px;
   height: 100%;
   position: relative;
-  border: 1px solid #ccc;
   background-color: #fff;
   overflow-x: auto;
   display: inline-block;
@@ -62,7 +67,13 @@ textarea {
 
 h3 {
   margin: 2px;
-  line-height: 30px;
+  font-family: courier;
+  color: #8D8D8D;
+  font-size: 16px;
+}
+
+.clickable {
+  cursor:pointer;
 }
 
 .accordion-heading .accordion-toggle {

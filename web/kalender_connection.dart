@@ -3,6 +3,8 @@ library kalender_connection;
 import 'dart:html';
 import 'dart:json' as JSON;
 import 'dart:async';
+import 'x_appointment.dart';
+import 'kalender.dart';
 
 StatusArea statusArea;
 
@@ -15,14 +17,47 @@ class KalenderConnection {
     _init();
   }
 
-  send(DateTime time, String name, String number) {
-    var encoded = JSON.stringify({'time': time.toString(), 'name': name, 'number': number});
+  send(DateTime time, Map data) {
+    var encoded = JSON.stringify({'time': time.toString(), 'data': data});
+    _sendEncodedMessage(encoded);
+  }
+  
+  sendRequest(String month) {
+    var encoded = JSON.stringify({'time': month.toString()});
     _sendEncodedMessage(encoded);
   }
 
   _receivedEncodedMessage(String encodedMessage) {
-    Map message = JSON.parse(encodedMessage);
-    print("Time: $message['time'], Name: $message['name'], Number: $message['number']");
+    print("Received encoded message: $encodedMessage");
+    var message = JSON.parse(encodedMessage);
+    if(message is List) {
+      print("got a list: $message");
+
+      clearAllXAppointments();
+      
+      message.forEach((a) {
+        xappointments.where((x) => x.time == DateTime.parse(a['time']))
+          .toSet().forEach((x) {
+            x.name = a['data']['name'];
+            x.number = a['data']['number'];
+            x.type = a['data']['type'];
+        });
+      });
+    }
+    if(message is Map) {
+      print("got a map: $message");
+      
+      print("${message['time'].substring(0, 7)} == $yearAndMonth");
+      
+      if (message['time'].substring(0, 7) == yearAndMonth) {
+        xappointments.where((x) => x.time == DateTime.parse(message['time']))
+        .toSet().forEach((x) {
+          x.name = message['data']['name'];
+          x.number = message['data']['number'];
+          x.type = message['data']['type'];
+        });
+      }
+    }
   }
 
   _sendEncodedMessage(String encodedMessage) {
@@ -49,6 +84,7 @@ class KalenderConnection {
 
     webSocket.onOpen.listen((e) {
       statusArea.displayNotice('Connected');
+      sendRequest(yearAndMonth);
     });
 
     webSocket.onClose.listen((e) => scheduleReconnect());
@@ -66,12 +102,12 @@ class KalenderConnection {
 class StatusArea extends View<ParagraphElement> {
   StatusArea(ParagraphElement elem) : super(elem);
 
-  displayMessage(String msg, String from) {
-    _display("$from: $msg\n");
-  }
-
   displayNotice(String notice) {
-    _display("Server status: $notice\n");
+    _display("Server: $notice\n");
+  }
+  
+  displaySaveMessage(String time, Map data){
+    elem.text = "Eintrag gespeichert! $time - $data";
   }
 
   _display(String str) {

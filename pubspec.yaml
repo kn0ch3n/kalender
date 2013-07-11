@@ -3,5 +3,6 @@ description: A sample WebUI application
 dependencies:
   browser: any
   js: any
+  mongo_dart: any
   web_ui: any
   widget: any
