@@ -12,11 +12,11 @@ startLogging() {
       print("Opening file $msg");
       logFile = new File(msg);
       out = logFile.openWrite(mode: FileMode.APPEND);
-    } else {
+    }/* else {
       time('write to file', () {
         out.write("${new DateTime.now()} : $msg\n");
       });
-    }
+    }*/
   });
 }
 

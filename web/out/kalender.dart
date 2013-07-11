@@ -13,7 +13,8 @@ import 'x_appointment.dart';
 import 'x_pause.dart';
 import 'dart:json' as JSON;
 import 'dart:async';
-import '../kalender_connection.dart';
+import 'kalender_connection.dart';
+import 'dart:math';
 
 
 // Original code
@@ -21,7 +22,20 @@ import '../kalender_connection.dart';
 
 KalenderConnection kalenderConnection;
 DivElement termineDiv;
+List<DivElement> appointmentColumns = new List<DivElement>();
+String selectedDate;
+String lastSelectedDate;
+final List<String> monthNames = ["Jänner", "Februar", "März", 
+                                 "April", "Mai", "Juni", 
+                                 "Juli", "August", "September", 
+                                 "Oktober", "November", "Dezember"];
+final List<String> weekdaysShort = ["Mo", "Di", "Mi", "Do", "Fr", "Sa", "So"];
+int daysInMonth;
+String monthName;
+String yearAndMonth;
+int maxDays = 31;
 
+List<XAppointment> xappointments = new List<XAppointment>();
 
 void main() {
   //useShadowDom = true;
@@ -29,100 +43,169 @@ void main() {
   statusArea = new StatusArea(statusElem);
   
   kalenderConnection = new KalenderConnection("ws://127.0.0.1:1337/ws");
+  XAppointment.connection = kalenderConnection;
   
+  selectedDate = toDateString(new DateTime.now());
   setupUI();
+  
+  document.body.onMouseWheel.listen((WheelEvent e) {
+    e.preventDefault();
+    document.body.scrollLeft += e.deltaY;
+  });
+}
+
+String toDateString(DateTime dateTime) {
+  var day = dateTime.day > 9 ? dateTime.day : "0" + dateTime.day.toString();
+  var month = dateTime.month > 9 ? dateTime.month : "0" + dateTime.month.toString();
+  var year = dateTime.year;
+  
+  return "$year-$month-$day";
 }
 
 void setupUI() {
   termineDiv = query("#termine");
   
-  for(int i = 1; i <= 31; i++) {
+  for (int i = 1; i <= maxDays; i++) {
     var id = i.toString().length > 1 ? i.toString() : "0" + i.toString();
-    var parent = query("#termine_$id");
-    
-    for (int h = 8; h <= 17; h++) {
-      for (int m = 0; m <= 40; m += 20) {
-        if(h == 12 && m == 0) pauseCreator(new DateTime(2013, 6, i, h, m), parent);
-        if(h == 12 || h == 13) continue;
-        appointmentCreator(new DateTime(2013, 6, i, h, m), parent);
+    var column = query("#termine_$id");
+    appointmentColumns.add(column);
+    if (column != null) {
+      for (int h = 8; h <= 17; h++) {
+        for (int m = 0; m <= 40; m += 20) {
+          if (h == 12 && m == 0) pauseCreator(new DateTime(2013, 6, i, h, m), column);
+          if (h == 12 || h == 13) continue;
+          DateTime t = new DateTime(
+              int.parse(selectedDate.substring(0, 4)),
+              int.parse(selectedDate.substring(5, 7)),
+              i, h, m);
+          String id = i > 9 ? i.toString() : "0" + i.toString();
+          int x = ((h-8)*3 + (m/20) + 1).toInt();
+          id += x > 9 ? x.toString() : "0" + x.toString();
+          xappointments.add(appointmentCreator(t, id, column));
+        }
       }
     }
   }
-
+  
+  dateChanged(); // Resize width of the termine div
 }
 
-void appointmentCreator(DateTime time, var parent){
-  var obj = new XAppointment(time, kalenderConnection);
+XAppointment appointmentCreator(DateTime time, String id, var parent) {
+  var obj = new XAppointment(time, id);
   var lifecycleCaller = new ComponentItem(obj)..create();
   parent.children.add(obj.host);
   lifecycleCaller.insert();
+  return obj;
 }
 
-void pauseCreator(DateTime time, var parent){
+void pauseCreator(DateTime time, var parent) {
   var obj = new XPause(time);
   var lifecycleCaller = new ComponentItem(obj)..create();
   parent.children.add(obj.host);
   lifecycleCaller.insert();
 }
 
+void dateChanged() {
+  //print("selected: $selectedDate , lastSelected: $lastSelectedDate");
+  if (lastSelectedDate == null || selectedDate.substring(0, 7) != lastSelectedDate.substring(0, 7)) {
+    print("dateChanged(): different month, updating view");
+    
+    daysInMonth = toDaysInMonth(selectedDate);
+    monthName = toMonthName(selectedDate);
+    yearAndMonth = selectedDate.substring(0, 7);
 
+    clearAllXAppointments();
 
-/*
-class Appointment {
-  final String time;
-  static Map<String, Appointment> _cache;
-  String name;
-  String number;
+    var year = selectedDate.substring(0, 4);
+    for (int i = 1; i <= maxDays; i++) {
+      var id = i.toString().length > 1 ? i.toString() : "0" + i.toString();
 
-  factory Appointment(String name) {
-    if (_cache == null) {
-      _cache = {};
+      // Create the heading for the day
+      var headingElement = query("#termine_$id h3");
+      if(headingElement != null) {
+        DateTime d = DateTime.parse(selectedDate.substring(0, 8) + id);
+        if(d.add(new Duration(days: 1)).isAfter(new DateTime.now())) {
+          headingElement.classes.add("after");
+          headingElement.classes.remove("before");
+        } else {
+          headingElement.classes.add("before");
+          headingElement.classes.remove("after");
+        }
+        headingElement.innerHtml = "${weekdaysShort[d.weekday - 1]}, $i. $monthName $year";
+      }
+
+      // Hide days not in current month
+      if(i >= 28) {
+        var termineElement = query("#termine_$id");
+        if(termineElement != null) {
+          if(i > daysInMonth) {
+            termineElement.style.display = "none";
+          } else {
+            termineElement.style.display = "inline-block";
+          }
+        }
+      }
     }
 
-    if (_cache.containsKey(name)) {
-      return _cache[time];
-    } else {
-      final appointment = new Appointment._internal(name);
-      _cache[name] = appointment;
-      return appointment;
+    // Change the times of the XAppointment instances
+    for (XAppointment x in xappointments) {
+      x.time = DateTime.parse(selectedDate.substring(0, 7) + x.time.toString().substring(7));
     }
+
+    // resize #termine
+    query("#termine").style.width = "${daysInMonth * 250}px}";
+    // request this months appointments
+    kalenderConnection.sendRequest(yearAndMonth);
+  } else {
+    print("dateChanged(): same month, not updating view");
   }
 
-  Appointment._internal(this.time);
+  //scroll to the right day
+  document.body.scrollLeft = (int.parse(selectedDate.substring(8, 10)) - 1) * 250;
+  
+  lastSelectedDate = selectedDate;
 }
 
-
-
-class NameInput extends View<InputElement> {
-  NameInput(InputElement elem) : super(elem);
-
-  bind() {
-    elem.onChange.listen((e) {
-      print("Name changed!");
-    });
+void clearAllXAppointments() {
+  for(var x in XAppointment.dirtyAppointments) {
+    x.clear();
   }
-
-  String get name => elem.value;
-
+  XAppointment.dirtyAppointments.clear();
 }
 
-class NumberInput extends View<InputElement> {
-  NumberInput(InputElement elem) : super(elem);
-
-  bind() {
-    elem.onChange.listen((e) {
-      print("Number changed!");
-    });
-  }
-
-  String get number => elem.value;
+String toMonthName(String dateString) {
+  int monthNumber = int.parse(dateString.substring(5, 7));
+  return monthNames[monthNumber - 1];
 }
-*/
+
+int toDaysInMonth(String dateString) {
+  String m = dateString.substring(5, 7);
+  if(m == "02") {
+    int y = int.parse(dateString.substring(0, 4));
+    if(y % 4 == 0) {
+      if(y % 100 == 0) {
+        if(y % 400 == 0){
+          return 29;
+        }
+        return 28;
+      }
+      return 29;
+    }
+    return 28;
+  } else if(m == "01" || m == "03" || m == "05" || m == "07" || m == "08" || m == "10" || m == "12") {
+    return 31;
+  } else return 30;
+}
 
 // Additional generated code
 void init_autogenerated() {
   var __root = autogenerated.document.body;
+  var __e0;
   var __t = new autogenerated.Template(__root);
+  __e0 = __root.nodes[1].nodes[3];
+  __t.listen(__e0.onChange, ($event) { dateChanged(); });
+  __t.listen(__e0.onInput, ($event) { selectedDate = __e0.value; });
+  __t.oneWayBind(() => selectedDate, (e) { if (__e0.value != e) __e0.value = e; }, false, false);
   __t.create();
   __t.insert();
 }

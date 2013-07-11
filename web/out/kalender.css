@@ -1,4 +1,4 @@
-/* Auto-generated from style sheet href = web/kalender.css */
+/* Auto-generated from style sheet href = web\kalender.css */
 /* DO NOT EDIT. */
 
 body {
@@ -26,12 +26,16 @@ h1, p {
   display: inline-block;
   padding-left: 6px;
 }
+.invisible {
+  display: none;
+}
 .day-columns {
-  margin-left: 200px;
+  margin-left: 208px;
+  padding-left: 72px;
+  padding-right: 72px;
   width: 8000px;
   height: 100%;
   position: relative;
-  border: 1px solid #ccc;
   background-color: #fff;
   overflow-x: auto;
   display: inline-block;
@@ -57,7 +61,17 @@ textarea {
 }
 h3 {
   margin: 2px;
-  line-height: 30px;
+  font-family: courier;
+  font-size: 16px;
+}
+.before {
+  color: #CECECE;
+}
+.after {
+  color: #000;
+}
+.clickable {
+  cursor: pointer;
 }
 .accordion-heading .accordion-toggle {
   padding: 2px;
@@ -74,5 +88,8 @@ x-appointment .accordion-inner {
   position: fixed;
   bottom: 0px;
   background-color: #F8F8F8;
+  margin-left: -6px;
+  padding-left: 6px;
+  padding-top: 6px;
 }
 

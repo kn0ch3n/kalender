@@ -11,16 +11,13 @@
           <x-collapse>
             <div class="accordion-heading">
               <a class="accordion-toggle" data-toggle="collapse">
-                {{heading}}
-              </a> <input type="text" bind-value="name" on-change="printChanged()">
+                {{ heading }}
+              </a> <input type="text" bind-value="name" on-change="valueChanged()">
+              <img src="{{ typeImages[type] }}" class="clickable" on-click="toggleImage()">
             </div>
-            <input type="tel" placeholder="Nummer" bind-value="number" on-change="printChanged()">
-            <select>
-              <option>Frei</option>
-              <option>Werkstatt</option>
-              <option>Nicht im Haus</option>
-              <option>Einlagen</option>
-              <option>Einlagen Folge</option>
+            <input type="tel" placeholder="Nummer" bind-value="number" on-change="valueChanged()">
+            <select template iterate="t in types" bind-selected-index="type" on-change="valueChanged()">
+              <option>{{ t }}</option>
             </select>
           </x-collapse>
         </x-accordion>

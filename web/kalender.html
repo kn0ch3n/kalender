@@ -15,7 +15,7 @@
   <body>
     <div id="navigation" class="sidebar">
       <h1>Kalender</h1>
-      <input type="date"> <p>
+      <input type="date" on-change="dateChanged()" bind-value="selectedDate"> <p>
       stuff <p>
       stuff <p>
       stuff <p>
@@ -60,6 +60,7 @@
       <div id="termine_30" class="day-column"><h3>30. Mai</h3></div>
       <div id="termine_31" class="day-column"><h3>31. Mai</h3></div>
     </div>
+    
 
     <script type="application/dart" src="kalender.dart"></script>
     <script src="packages/browser/dart.js"></script>

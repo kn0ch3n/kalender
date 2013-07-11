@@ -21,10 +21,18 @@ packages:
     description: browser
     source: hosted
     version: "0.5.20"
+  bson:
+    description: bson
+    source: hosted
+    version: "0.1.7"
+  crypto:
+    description: crypto
+    source: hosted
+    version: "0.5.20"
   csslib:
     description: csslib
     source: hosted
-    version: "0.4.7+6"
+    version: "0.4.7+7"
   html5lib:
     description: html5lib
     source: hosted
@@ -41,6 +49,14 @@ packages:
     description: meta
     source: hosted
     version: "0.5.20"
+  mongo_dart:
+    description: mongo_dart
+    source: hosted
+    version: "0.1.22"
+  mongo_dart_query:
+    description: mongo_dart_query
+    source: hosted
+    version: "0.1.4"
   pathos:
     description: pathos
     source: hosted
@@ -56,7 +72,7 @@ packages:
   web_ui:
     description: web_ui
     source: hosted
-    version: "0.4.12+2"
+    version: "0.4.13+2"
   widget:
     description: widget
     source: hosted
