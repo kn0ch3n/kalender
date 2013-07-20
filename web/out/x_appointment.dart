@@ -137,7 +137,7 @@ class XAppointment extends WebComponent with Observable  {
       'number': null,
       'type': 0
     });
-    print("XAppointment created: ${time.toString()}, ID: $id");
+    //print("XAppointment created: ${time.toString()}, ID: $id");
   }
 
   clear() {
@@ -167,7 +167,9 @@ class XAppointment extends WebComponent with Observable  {
   }
   
   valueChanged() {
+    print("in valueChanged of XAppointment");
     dirtyAppointments.add(this);
+    print("after adding, dirtyAppointments length is ${dirtyAppointments.length}");
     connection.send(time, _data);
     statusArea.displaySaveMessage(headingWithDate, _data);
   }

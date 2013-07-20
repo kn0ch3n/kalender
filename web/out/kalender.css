@@ -8,6 +8,7 @@ body {
   font-weight: normal;
   line-height: 1.2em;
   margin: 0px;
+  height: 100%;
 }
 h1, p {
   color: #333;
@@ -29,6 +30,10 @@ h1, p {
 .invisible {
   display: none;
 }
+.day-color {
+  cursor: pointer;
+  padding-left: 3px;
+}
 .day-columns {
   margin-left: 208px;
   padding-left: 72px;
@@ -46,11 +51,26 @@ h1, p {
   float: left;
   height: 100%;
   display: inline-block;
+  background-color: #FFF;
 }
-input, input[type="text"], input[type="tel"], select {
+background-color {
+}
+FF55 {
+}
+background-color {
+  FEFE99: #background-color;
+}
+#FF8844 {
+}
+background-color {
+  CCCCCC: ;
+}
+input[type="date"], input[type="text"], input[type="tel"], select {
   width: 160px;
   margin: 2px;
-  padding: 0px;
+}
+input[type="text"], input[type="tel"], select {
+  padding: 0px 2px;
 }
 select {
   height: 24px;
@@ -60,9 +80,11 @@ textarea {
   resize: vertical;
 }
 h3 {
-  margin: 2px;
   font-family: courier;
   font-size: 16px;
+  background-color: #FFF;
+  -webkit-margin-before: 0px;
+  -webkit-margin-after: 0px;
 }
 .before {
   color: #CECECE;

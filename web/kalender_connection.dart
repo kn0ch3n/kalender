@@ -125,6 +125,7 @@ class StatusArea extends View<ParagraphElement> {
   }
   
   displaySaveMessage(String time, Map data){
+    print("displaySaveMessage");
     //elem.text = "Eintrag gespeichert! $time - $data"; //that's not how it works =/
   }
 

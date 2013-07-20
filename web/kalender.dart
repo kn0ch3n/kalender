@@ -6,6 +6,7 @@ import 'dart:json' as JSON;
 import 'dart:async';
 import 'kalender_connection.dart';
 import 'dart:math';
+import 'dart:isolate';
 
 KalenderConnection kalenderConnection;
 DivElement termineDiv;
@@ -25,8 +26,11 @@ int maxDays = 31;
 List<XAppointment> xappointments = new List<XAppointment>();
 List<XPause> xpauses = new List<XPause>();
 
+var sw;
+
 void main() {
   //useShadowDom = true;
+  sw = new Stopwatch()..start();
   ParagraphElement statusElem = query('#status-area');
   statusArea = new StatusArea(statusElem);
   
@@ -36,7 +40,7 @@ void main() {
   
   selectedDate = toDateString(new DateTime.now());
   setupUI();
-  
+
   document.body.onMouseWheel.listen((WheelEvent e) {
     e.preventDefault();
     document.body.scrollLeft += e.deltaY;
@@ -54,6 +58,8 @@ String toDateString(DateTime dateTime) {
 void setupUI() {
   termineDiv = query("#termine");
   
+  int year = int.parse(selectedDate.substring(0, 4));
+  int month = int.parse(selectedDate.substring(5, 7));
   for (int i = 1; i <= maxDays; i++) {
     var id = i.toString().length > 1 ? i.toString() : "0" + i.toString();
     var column = query("#termine_$id");
@@ -61,10 +67,7 @@ void setupUI() {
     if (column != null) {
       for (int h = 8; h <= 17; h++) {
         for (int m = 0; m <= 40; m += 20) {
-          DateTime t = new DateTime(
-              int.parse(selectedDate.substring(0, 4)),
-              int.parse(selectedDate.substring(5, 7)),
-              i, h, m);
+          DateTime t = new DateTime(year, month, i, h, m);
           if (h == 12 && m == 0) xpauses.add(pauseCreator(t, column));
           if (h == 12 || h == 13) continue;
           String id = i > 9 ? i.toString() : "0" + i.toString();
@@ -96,8 +99,8 @@ XPause pauseCreator(DateTime time, var parent) {
 }
 
 void dateChanged() {
-  //print("selected: $selectedDate , lastSelected: $lastSelectedDate");
-  if (lastSelectedDate == null || selectedDate.substring(0, 7) != lastSelectedDate.substring(0, 7)) {
+  print("in dateChanged: selectedDate: $selectedDate , lastSelectedDate: $lastSelectedDate");
+  if (lastSelectedDate == null || selectedDate.length >= 7 && selectedDate.substring(0, 7) != lastSelectedDate.substring(0, 7)) {
     print("dateChanged(): different month, updating view");
     
     daysInMonth = toDaysInMonth(selectedDate);

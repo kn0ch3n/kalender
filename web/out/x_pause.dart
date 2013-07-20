@@ -111,6 +111,14 @@ class XPause extends WebComponent with Observable  {
     });
   }
   
+  clear() {
+    _data = toObservable({
+      'name': null,
+      'text': null
+    });
+    //print("XPause cleared: " + time.toString());
+  }
+  
   String timeForHeading(DateTime t) {
     String hour = t.hour.toString();
     String minute = t.minute.toString();
