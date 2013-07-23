@@ -54,11 +54,11 @@ h1, p {
   float: left;
   height: 100%;
   display: inline-block;
+  background-color: #77FF55;
+  background-color: #FEFE99;
+  background-color: #FF8844;
+  background-color: #CCCCCC;
   background-color: #FFFFFF;
-  #background-color: #77FF55;
-  #background-color: #FEFE99;
-  #background-color: #FF8844;
-  #background-color: #CCCCCC;
 }
 
 input[type="date"], input[type="text"], input[type="tel"], select {

@@ -4,23 +4,23 @@ packages:
   analyzer_experimental:
     description: analyzer_experimental
     source: hosted
-    version: "0.5.20"
+    version: "0.6.5"
   args:
     description: args
     source: hosted
-    version: "0.5.20"
+    version: "0.6.5"
   bot:
     description: bot
     source: hosted
-    version: "0.22.0"
+    version: "0.22.2"
   bot_web:
     description: bot_web
     source: hosted
-    version: "0.20.1"
+    version: "0.20.3"
   browser:
     description: browser
     source: hosted
-    version: "0.5.20"
+    version: "0.6.5"
   bson:
     description: bson
     source: hosted
@@ -28,11 +28,11 @@ packages:
   crypto:
     description: crypto
     source: hosted
-    version: "0.5.20"
+    version: "0.6.5"
   csslib:
     description: csslib
     source: hosted
-    version: "0.4.7+7"
+    version: "0.4.7+10"
   html5lib:
     description: html5lib
     source: hosted
@@ -40,39 +40,43 @@ packages:
   js:
     description: js
     source: hosted
-    version: "0.0.23"
+    version: "0.0.24"
   logging:
     description: logging
     source: hosted
-    version: "0.5.20"
+    version: "0.6.5"
   meta:
     description: meta
     source: hosted
-    version: "0.5.20"
+    version: "0.6.5"
   mongo_dart:
     description: mongo_dart
     source: hosted
-    version: "0.1.22"
+    version: "0.1.24"
   mongo_dart_query:
     description: mongo_dart_query
     source: hosted
-    version: "0.1.4"
+    version: "0.1.7"
+  path:
+    description: path
+    source: hosted
+    version: "0.6.5"
   pathos:
     description: pathos
     source: hosted
-    version: "0.5.20"
+    version: "0.6.3+1"
   source_maps:
     description: source_maps
     source: hosted
-    version: "0.5.20"
+    version: "0.6.5"
   unittest:
     description: unittest
     source: hosted
-    version: "0.5.20"
+    version: "0.6.5"
   web_ui:
     description: web_ui
     source: hosted
-    version: "0.4.13+2"
+    version: "0.4.14+1"
   widget:
     description: widget
     source: hosted
