@@ -1,3 +1,5 @@
+library kalender;
+
 import 'dart:html';
 import 'package:web_ui/web_ui.dart';
 import 'x_appointment.dart';
@@ -18,10 +20,11 @@ final List<String> monthNames = ["Jänner", "Februar", "März",
                                  "Juli", "August", "September", 
                                  "Oktober", "November", "Dezember"];
 final List<String> weekdaysShort = ["Mo", "Di", "Mi", "Do", "Fr", "Sa", "So"];
-int daysInMonth;
+int currentDaysInMonth;
 String monthName;
 String yearAndMonth;
 int maxDays = 31;
+int columnWidth = 300;
 
 List<XAppointment> xappointments = new List<XAppointment>();
 List<XPause> xpauses = new List<XPause>();
@@ -103,7 +106,7 @@ void dateChanged() {
   if (lastSelectedDate == null || selectedDate.length >= 7 && selectedDate.substring(0, 7) != lastSelectedDate.substring(0, 7)) {
     print("dateChanged(): different month, updating view");
     
-    daysInMonth = toDaysInMonth(selectedDate);
+    currentDaysInMonth = daysInMonth(selectedDate);
     monthName = toMonthName(selectedDate);
     yearAndMonth = selectedDate.substring(0, 7);
 
@@ -131,7 +134,7 @@ void dateChanged() {
       if(i >= 28) {
         var termineElement = query("#termine_$id");
         if(termineElement != null) {
-          if(i > daysInMonth) {
+          if(i > currentDaysInMonth) {
             termineElement.style.display = "none";
           } else {
             termineElement.style.display = "inline-block";
@@ -151,17 +154,38 @@ void dateChanged() {
     }
 
     // resize #termine
-    query("#termine").style.width = "${daysInMonth * 250}px}";
+    query("#termine").style.width = "${currentDaysInMonth * columnWidth + 50}px}";
+    updateHeight();
     // request this months appointments
     kalenderConnection.sendRequest(yearAndMonth);
   } else {
     print("dateChanged(): same month, not updating view");
   }
 
-  //scroll to the right day
-  document.body.scrollLeft = (int.parse(selectedDate.substring(8, 10)) - 1) * 250;
-  
-  lastSelectedDate = selectedDate;
+  if(selectedDate.length >= 7) {
+    //scroll to the right day
+    document.body.scrollLeft = (int.parse(selectedDate.substring(8, 10)) - 1) * columnWidth;
+    
+    lastSelectedDate = selectedDate;
+  }
+}
+
+void updateHeight() {
+  print("TODO: fix updating the height so it actually works...");
+  query("#termine").style.height = (window.innerHeight).toString() + "px";
+}
+
+void updateNextFreeSpots() {
+  print("updating free spots");
+  var nextFreeSpots = query("#next-free-spots");
+  nextFreeSpots.children.clear();
+  xappointments.where((x) {
+    return x.time.isAfter(new DateTime.now()) && x.isEmpty();
+  }).toList().take(30).forEach((a) {
+    var li = new LIElement();
+    li.text = "$a";
+    nextFreeSpots.children.add(li);
+  });
 }
 
 void clearAllXAppointments() {
@@ -176,7 +200,7 @@ String toMonthName(String dateString) {
   return monthNames[monthNumber - 1];
 }
 
-int toDaysInMonth(String dateString) {
+int daysInMonth(String dateString) {
   String m = dateString.substring(5, 7);
   if(m == "02") {
     int y = int.parse(dateString.substring(0, 4));
@@ -193,4 +217,37 @@ int toDaysInMonth(String dateString) {
   } else if(m == "04" || m == "06" || m == "09" || m == "11") {
     return 30;
   } else return 31;
+}
+
+extend(XAppointment source) {
+  var nextId = getNextId(source.id);
+  var doAgain = true;
+
+  while(doAgain) {
+    doAgain = false;
+    if(nextId != null) {
+      xappointments.where((a) => a.id == nextId).toSet().forEach((a) {
+        if(a.name == source.name && a.number == source.number && a.type == source.type && a.color == source.color) doAgain = true;
+        else {
+          a.name = source.name;
+          a.number = source.number;
+          a.type = source.type;
+          a.color = source.color;
+          XAppointment.dirtyAppointments.add(a);
+          a.valueChanged();
+        }
+      });
+    }
+    if(doAgain) nextId = getNextId(nextId);
+  }
+}
+
+String getNextId(String currentId) {
+  int currentPos = int.parse(currentId.substring(2, 4));
+  int nextPos = (currentPos + 1);
+  if(nextPos > 30) return null; // out of range
+  String nextPosString = nextPos < 10 ? "0" + nextPos.toString() : nextPos.toString();
+  var nextId = currentId.substring(0, 2) + nextPosString;
+  
+  return nextId;
 }

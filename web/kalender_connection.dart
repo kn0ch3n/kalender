@@ -5,7 +5,7 @@ import 'dart:json' as JSON;
 import 'dart:async';
 import 'x_appointment.dart';
 import 'x_pause.dart';
-import 'kalender.dart';
+import 'kalender.dart' as kalender;
 
 StatusArea statusArea;
 
@@ -35,14 +35,17 @@ class KalenderConnection {
       
       message.forEach((a) {
         if(a['data'].containsKey('number')) {
-          xappointments.where((x) => x.time == DateTime.parse(a['time'])).toSet().forEach((x) {
+          // it's an appointment
+          kalender.xappointments.where((x) => x.time == DateTime.parse(a['time'])).toSet().forEach((x) {
               x.name = a['data']['name'];
               x.number = a['data']['number'];
               x.type = a['data']['type'];
+              x.color = a['data']['color'];
               XAppointment.dirtyAppointments.add(x);
           });
         } else if (a['data'].containsKey('text')) {
-          xpauses.where((x) => x.time == DateTime.parse(a['time'])).toSet().forEach((x) {
+          //it's a pause
+          kalender.xpauses.where((x) => x.time == DateTime.parse(a['time'])).toSet().forEach((x) {
               x.name = a['data']['name'];
               x.text = a['data']['text'];
               XPause.dirtyPauses.add(x);
@@ -55,21 +58,22 @@ class KalenderConnection {
       if (message['data'].containsKey('number')) {
         print("Received a map (an appointment): $message");
         
-        if (message['time'].substring(0, 7) == yearAndMonth) {
+        if (message['time'].substring(0, 7) == kalender.yearAndMonth) {
           // It's in the selected month, let's do something
-          xappointments.where((x) => x.time == DateTime.parse(message['time'])).toSet().forEach((x) {
+          kalender.xappointments.where((x) => x.time == DateTime.parse(message['time'])).toSet().forEach((x) {
             x.name = message['data']['name'];
             x.number = message['data']['number'];
             x.type = message['data']['type'];
+            x.color = message['data']['color'];
             XAppointment.dirtyAppointments.add(x);
           });
         }
       } else if (message['data'].containsKey('text')){
         print("Received a map (a pause): $message");
 
-        if (message['time'].substring(0, 7) == yearAndMonth) {
+        if (message['time'].substring(0, 7) == kalender.yearAndMonth) {
           // It's in the selected month, let's do something
-          xpauses.where((x) => x.time == DateTime.parse(message['time'])).toSet().forEach((x) {
+          kalender.xpauses.where((x) => x.time == DateTime.parse(message['time'])).toSet().forEach((x) {
             x.name = message['data']['name'];
             x.text = message['data']['text'];
             XPause.dirtyPauses.add(x);
@@ -77,6 +81,8 @@ class KalenderConnection {
         }
       }
     }
+
+    kalender.updateNextFreeSpots();
   }
 
   _sendEncodedMessage(String encodedMessage) {
@@ -103,7 +109,7 @@ class KalenderConnection {
 
     webSocket.onOpen.listen((e) {
       statusArea.displayNotice('Connected');
-      sendRequest(yearAndMonth);
+      sendRequest(kalender.yearAndMonth);
     });
 
     webSocket.onClose.listen((e) => scheduleReconnect());

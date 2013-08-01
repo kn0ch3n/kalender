@@ -6,14 +6,21 @@ import 'package:widget/components/accordion.dart';
 import 'package:widget/effects.dart';
 import 'package:widget/widget.dart';
 import 'kalender_connection.dart';
+import 'kalender.dart' as kalender;
 
 class XAppointment extends WebComponent {
   static List<XAppointment> dirtyAppointments = new List<XAppointment>();
   static KalenderConnection connection;
   String id;
   
-  final List<String> types = ["Frei", "Werkstatt", "Nicht im Haus", "Einlagen", "Einlagen Folge"];
-  final List<String> typeImages = ["img/frei.png", "img/werkstatt.png", "img/nicht_im_haus.png", "img/einlagen.png", "img/einlagen_folge.png"];
+  final List<String> types = ["Frei", "Werkstatt", "Außer Haus", "Einlagen Erstversorgung", "Einlagen Folgeversorgung", 
+                              "Podologische Sohlen Erstversorgung", "Podologische Sohlen Kontrolle", "Podologische Sohlen Folgeversorgung", 
+                              "Orthop. Schuhe Erstversorgung", "Orthop. Schuhe Folgeversorgung", "Orthop. Schuhe Probe",
+                              "Verkürzungsausgleich Erstversorgung", "Verkürzungsausgleich Folgeversorgung"];
+  final List<String> typeImages = ["img/frei.png", "img/werkstatt.png", "img/nicht_im_haus.png", "img/einlagen.png", "img/einlagen_folge.png",
+                                   "img/frei.png", "img/frei.png", "img/frei.png",
+                                   "img/frei.png", "img/frei.png", "img/frei.png", 
+                                   "img/frei.png", "img/frei.png"];
 
   DateTime time;
   String get heading => timeForHeading(time);
@@ -26,14 +33,18 @@ class XAppointment extends WebComponent {
   set number(value) => _data['number'] = value;
   int get type => _data['type'];
   set type(value) => _data['type'] = value;
+  String get color => _data['color'];
+  set color(value) => _data['color'] = value;
   
   XAppointment(DateTime time, String id) {
     host = new Element.html('<x-appointment id="$id"></x-appointment>');
     this.time = time;
+    this.id = id;
     this._data = toObservable({
       'name': null,
       'number': null,
-      'type': 0
+      'type': 0,
+      'color': "#FFFFFF"
     });
     //print("XAppointment created: ${time.toString()}, ID: $id");
   }
@@ -42,8 +53,10 @@ class XAppointment extends WebComponent {
     _data = toObservable({
       'name': null,
       'number': null,
-      'type': 0
+      'type': 0,
+      'color': "#FFFFFF"
     });
+    valueChanged();
     //print("XAppointment cleared: " + time.toString());
   }
   
@@ -65,10 +78,12 @@ class XAppointment extends WebComponent {
   }
   
   valueChanged() {
-    print("in valueChanged of XAppointment");
+    if (type == 1) color = "#FF8844";
+    else if (type == 2) color = "#FEFE99";
+    else if (type != null) color = "#FFFFFF";
     dirtyAppointments.add(this);
-    print("after adding, dirtyAppointments length is ${dirtyAppointments.length}");
     connection.send(time, _data);
+    kalender.updateNextFreeSpots();
     statusArea.displaySaveMessage(headingWithDate, _data);
   }
   
@@ -77,4 +92,18 @@ class XAppointment extends WebComponent {
     if (type >= types.length) type = 0;
     valueChanged();
   }
+
+  extend() {
+    kalender.extend(this);
+  }
+  
+  updateHeight() {
+    kalender.updateHeight();
+  }
+  
+  bool isEmpty() {
+    return (this.name == null || this.name == "") && (this.number == null || this.number == "") && this.type == 0;
+  }
+  
+  String toString() => timeAndDateForHeading(this.time);
 }

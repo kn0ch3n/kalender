@@ -38,7 +38,7 @@ h1, p {
   margin-left: 208px;
   padding-left: 72px;
   padding-right: 72px;
-  width: 8000px;
+  width: 12000px;
   height: 100%;
   position: relative;
   background-color: #fff;
@@ -47,22 +47,25 @@ h1, p {
 }
 .day-column {
   vertical-align: top;
-  width: 250px;
+  width: 300px;
   float: left;
-  height: 100%;
   display: inline-block;
-  background-color: #FFF;
   background-color: #7F5;
   background-color: #FEFE99;
   background-color: #F84;
   background-color: #CCC;
+  background-color: #FFF;
 }
-input[type="date"], input[type="text"], input[type="tel"], select {
-  width: 160px;
+input[type="text"], input[type="tel"], select {
+  width: 210px;
   margin: 2px;
 }
 input[type="text"], input[type="tel"], select {
   padding: 0px 2px;
+}
+input[type="date"] {
+  width: 160px;
+  margin: 2px;
 }
 select {
   height: 24px;
