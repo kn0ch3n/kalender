@@ -12,8 +12,8 @@
             <div class="accordion-heading" style="background-color: {{ color }}">
               <a class="accordion-toggle" data-toggle="collapse" on-click="updateHeight()">
                 {{ heading }}
-              </a> <input type="text" bind-value="name" on-change="valueChanged()">
-              <img src="{{ typeImages[type] }}" class="clickable" on-click="toggleImage()">
+              </a> <input type="text" bind-value="name" on-change="valueChanged()" data-toggle="collapse" >
+              <img src="{{ typeImages[type] }}" class="clickable" on-click="toggleImage()" title="{{ types[type] }}">
             </div>
             <img src="img/v.png" class="clickable" style="margin-left: -40px" on-click="extend()">
             <input type="tel" placeholder="Nummer" bind-value="number" on-change="valueChanged()"> <br />

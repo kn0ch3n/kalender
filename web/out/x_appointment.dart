@@ -29,7 +29,7 @@ class XAppointment extends WebComponent with Observable  {
         <div is="x-accordion" class="day-column">
           <div is="x-collapse">
             <div class="accordion-heading" style="background-color: {{ color }}">
-              <a class="accordion-toggle" data-toggle="collapse"></a> <input type="text">
+              <a class="accordion-toggle" data-toggle="collapse"></a> <input type="text" data-toggle="collapse">
               <img class="clickable">
             </div>
             <img src="img/v.png" class="clickable" style="margin-left: -40px">
@@ -68,6 +68,7 @@ class XAppointment extends WebComponent with Observable  {
     __e5 = __e6.nodes[5];
     __t.listen(__e5.onClick, ($event) { toggleImage(); });
     __t.oneWayBind(() =>  typeImages[type] , (e) { if (__e5.src != e) __e5.src = e; }, false, true);
+    __t.oneWayBind(() =>  types[type] , (e) { if (__e5.title != e) __e5.title = e; }, false, false);
     __t.bind(() =>  color ,  (__e) { __e6.attributes['style'] = 'background-color: ${__e.newValue}'; }, false);
     __e7 = __e13.nodes[3];
     __t.listen(__e7.onClick, ($event) { extend(); });
