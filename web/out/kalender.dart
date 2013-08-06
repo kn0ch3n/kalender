@@ -116,6 +116,7 @@ void dateChanged() {
 }
 
 void updateView() {
+  //called when month is changed
   clearAllXAppointments();
   currentDaysInMonth = daysInMonth(selectedDate);
   monthName = toMonthName(selectedDate);
@@ -127,12 +128,10 @@ void updateView() {
     var headingElement = query("#termine_$id h3");
     if(headingElement != null) {
       DateTime d = DateTime.parse(selectedDate.substring(0, 8) + id);
-      if(d.add(new Duration(days: 1)).isAfter(new DateTime.now())) {
-        headingElement.classes.add("after");
+      if(d.add(new Duration(days: 1)).isAfter(new DateTime.now()) && !(weekdaysShort[d.weekday - 1] == "So")) {
         headingElement.classes.remove("before");
       } else {
         headingElement.classes.add("before");
-        headingElement.classes.remove("after");
       }
       headingElement.innerHtml = "${weekdaysShort[d.weekday - 1]}, $i. $monthName $year";
     }

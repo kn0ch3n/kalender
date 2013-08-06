@@ -12,7 +12,7 @@
             <div class="accordion-heading">
               <a class="accordion-toggle" data-toggle="collapse">
                 {{heading}}
-              </a> <input type="text" placeholder="Mittagspause" bind-value="name" on-change="valueChanged()">
+              </a> <input type="text" placeholder="Mittagspause" bind-value="name" on-change="valueChanged()" data-toggle="collapse">
             </div>
             <textarea rows="3" bind-value="text" on-change="valueChanged()"></textarea>
           </x-collapse>

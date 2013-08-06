@@ -50,11 +50,6 @@ h1, p {
   width: 300px;
   float: left;
   display: inline-block;
-  background-color: #7F5;
-  background-color: #FEFE99;
-  background-color: #F84;
-  background-color: #CCC;
-  background-color: #FFF;
 }
 input[type="text"], input[type="tel"], select {
   width: 210px;
@@ -62,6 +57,9 @@ input[type="text"], input[type="tel"], select {
 }
 input[type="text"], input[type="tel"], select {
   padding: 0px 2px;
+}
+x-pause textarea {
+  width: 240px;
 }
 input[type="date"] {
   width: 160px;
@@ -83,9 +81,6 @@ h3 {
 }
 .before {
   color: #CECECE;
-}
-.after {
-  color: #000;
 }
 .clickable {
   cursor: pointer;

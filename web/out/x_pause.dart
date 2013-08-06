@@ -28,7 +28,7 @@ class XPause extends WebComponent with Observable  {
         <div is="x-accordion" class="day-column">
           <div is="x-collapse">
             <div class="accordion-heading">
-              <a class="accordion-toggle" data-toggle="collapse"></a> <input type="text" placeholder="Mittagspause">
+              <a class="accordion-toggle" data-toggle="collapse"></a> <input type="text" placeholder="Mittagspause" data-toggle="collapse">
             </div>
             <textarea rows="3"></textarea>
           </div>
