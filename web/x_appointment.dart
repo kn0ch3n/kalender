@@ -12,7 +12,6 @@ class XAppointment extends WebComponent {
   static List<XAppointment> dirtyAppointments = new List<XAppointment>();
   static KalenderConnection connection;
   String id;
-  
   final List<String> types = ["Frei", "Werkstatt", "Außer Haus", "Einlagen Erstversorgung", "Einlagen Folgeversorgung", 
                               "Podologische Sohlen Erstversorgung", "Podologische Sohlen Kontrolle", "Podologische Sohlen Folgeversorgung", 
                               "Orthop. Schuhe Erstversorgung", "Orthop. Schuhe Folgeversorgung", "Orthop. Schuhe Probe",
@@ -21,7 +20,6 @@ class XAppointment extends WebComponent {
                                    "img/frei.png", "img/frei.png", "img/frei.png",
                                    "img/frei.png", "img/frei.png", "img/frei.png", 
                                    "img/frei.png", "img/frei.png"];
-
   DateTime time;
   String get heading => timeForHeading(time);
   String get headingWithDate => timeAndDateForHeading(time);
@@ -46,7 +44,6 @@ class XAppointment extends WebComponent {
       'type': 0,
       'color': "#FFFFFF"
     });
-    //print("XAppointment created: ${time.toString()}, ID: $id");
   }
 
   clear() {
@@ -57,7 +54,6 @@ class XAppointment extends WebComponent {
       'color': "#FFFFFF"
     });
     valueChanged();
-    //print("XAppointment cleared: " + time.toString());
   }
   
   String timeForHeading(DateTime t) {

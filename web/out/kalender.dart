@@ -21,40 +21,32 @@ import 'dart:isolate';
 // Original code
 
 
+final List<String> monthNames = ["Jänner", "Februar", "März", "April", "Mai", "Juni", 
+                                 "Juli", "August", "September", "Oktober", "November", "Dezember"];
+final List<String> weekdaysShort = ["Mo", "Di", "Mi", "Do", "Fr", "Sa", "So"];
 KalenderConnection kalenderConnection;
 DivElement termineDiv;
 List<DivElement> appointmentColumns = new List<DivElement>();
 String selectedDate;
 String lastSelectedDate;
-final List<String> monthNames = ["Jänner", "Februar", "März", 
-                                 "April", "Mai", "Juni", 
-                                 "Juli", "August", "September", 
-                                 "Oktober", "November", "Dezember"];
-final List<String> weekdaysShort = ["Mo", "Di", "Mi", "Do", "Fr", "Sa", "So"];
 int currentDaysInMonth;
 String monthName;
 String yearAndMonth;
 int maxDays = 31;
 int columnWidth = 300;
-
 List<XAppointment> xappointments = new List<XAppointment>();
 List<XPause> xpauses = new List<XPause>();
 
-var sw;
-
 void main() {
-  //useShadowDom = true;
-  sw = new Stopwatch()..start();
   ParagraphElement statusElem = query('#status-area');
   statusArea = new StatusArea(statusElem);
-  
   kalenderConnection = new KalenderConnection("ws://127.0.0.1:1337/ws");
   XAppointment.connection = kalenderConnection;
   XPause.connection = kalenderConnection;
-  
   selectedDate = toDateString(new DateTime.now());
   setupUI();
 
+  // Listeners
   document.body.onMouseWheel.listen((WheelEvent e) {
     e.preventDefault();
     document.body.scrollLeft += e.deltaY;
@@ -65,13 +57,11 @@ String toDateString(DateTime dateTime) {
   var day = dateTime.day > 9 ? dateTime.day : "0" + dateTime.day.toString();
   var month = dateTime.month > 9 ? dateTime.month : "0" + dateTime.month.toString();
   var year = dateTime.year;
-  
   return "$year-$month-$day";
 }
 
 void setupUI() {
   termineDiv = query("#termine");
-  
   int year = int.parse(selectedDate.substring(0, 4));
   int month = int.parse(selectedDate.substring(5, 7));
   for (int i = 1; i <= maxDays; i++) {
@@ -92,8 +82,7 @@ void setupUI() {
       }
     }
   }
-  
-  dateChanged(); // Resize width of the termine div
+  dateChanged(); // To resize width of the termine div
 }
 
 XAppointment appointmentCreator(DateTime time, String id, var parent) {
@@ -115,70 +104,63 @@ XPause pauseCreator(DateTime time, var parent) {
 void dateChanged() {
   print("in dateChanged: selectedDate: $selectedDate , lastSelectedDate: $lastSelectedDate");
   if (lastSelectedDate == null || selectedDate.length >= 7 && selectedDate.substring(0, 7) != lastSelectedDate.substring(0, 7)) {
-    print("dateChanged(): different month, updating view");
-    
-    currentDaysInMonth = daysInMonth(selectedDate);
-    monthName = toMonthName(selectedDate);
-    yearAndMonth = selectedDate.substring(0, 7);
-
-    clearAllXAppointments();
-
-    var year = selectedDate.substring(0, 4);
-    for (int i = 1; i <= maxDays; i++) {
-      var id = i.toString().length > 1 ? i.toString() : "0" + i.toString();
-
-      // Create the heading for the day
-      var headingElement = query("#termine_$id h3");
-      if(headingElement != null) {
-        DateTime d = DateTime.parse(selectedDate.substring(0, 8) + id);
-        if(d.add(new Duration(days: 1)).isAfter(new DateTime.now())) {
-          headingElement.classes.add("after");
-          headingElement.classes.remove("before");
-        } else {
-          headingElement.classes.add("before");
-          headingElement.classes.remove("after");
-        }
-        headingElement.innerHtml = "${weekdaysShort[d.weekday - 1]}, $i. $monthName $year";
-      }
-
-      // Hide days not in current month
-      if(i >= 28) {
-        var termineElement = query("#termine_$id");
-        if(termineElement != null) {
-          if(i > currentDaysInMonth) {
-            termineElement.style.display = "none";
-          } else {
-            termineElement.style.display = "inline-block";
-          }
-        }
-      }
-    }
-
-    // Change the times of the XAppointment instances
-    for (XAppointment x in xappointments) {
-      x.time = DateTime.parse(selectedDate.substring(0, 7) + x.time.toString().substring(7));
-    }
-
-    // Change the times of the XPause instances
-    for (XPause x in xpauses) {
-      x.time = DateTime.parse(selectedDate.substring(0, 7) + x.time.toString().substring(7));
-    }
-
-    // resize #termine
-    query("#termine").style.width = "${currentDaysInMonth * columnWidth + 50}px}";
-    updateHeight();
-    // request this months appointments
-    kalenderConnection.sendRequest(yearAndMonth);
+    updateView();
   } else {
     print("dateChanged(): same month, not updating view");
   }
-
   if(selectedDate.length >= 7) {
     //scroll to the right day
     document.body.scrollLeft = (int.parse(selectedDate.substring(8, 10)) - 1) * columnWidth;
-    
     lastSelectedDate = selectedDate;
   }
+}
+
+void updateView() {
+  clearAllXAppointments();
+  currentDaysInMonth = daysInMonth(selectedDate);
+  monthName = toMonthName(selectedDate);
+  yearAndMonth = selectedDate.substring(0, 7);
+  var year = selectedDate.substring(0, 4);
+  for (int i = 1; i <= maxDays; i++) {
+    var id = i.toString().length > 1 ? i.toString() : "0" + i.toString();
+    // Create the heading for the day
+    var headingElement = query("#termine_$id h3");
+    if(headingElement != null) {
+      DateTime d = DateTime.parse(selectedDate.substring(0, 8) + id);
+      if(d.add(new Duration(days: 1)).isAfter(new DateTime.now())) {
+        headingElement.classes.add("after");
+        headingElement.classes.remove("before");
+      } else {
+        headingElement.classes.add("before");
+        headingElement.classes.remove("after");
+      }
+      headingElement.innerHtml = "${weekdaysShort[d.weekday - 1]}, $i. $monthName $year";
+    }
+    // Hide days not in current month
+    if(i >= 28) {
+      var termineElement = query("#termine_$id");
+      if(termineElement != null) {
+        if(i > currentDaysInMonth) {
+          termineElement.style.display = "none";
+        } else {
+          termineElement.style.display = "inline-block";
+        }
+      }
+    }
+  }
+  // Change the times of the XAppointment instances
+  for (XAppointment x in xappointments) {
+    x.time = DateTime.parse(selectedDate.substring(0, 7) + x.time.toString().substring(7));
+  }
+  // Change the times of the XPause instances
+  for (XPause x in xpauses) {
+    x.time = DateTime.parse(selectedDate.substring(0, 7) + x.time.toString().substring(7));
+  }
+  // resize #termine
+  query("#termine").style.width = "${currentDaysInMonth * columnWidth + 50}px}";
+  updateHeight();
+  // request this months appointments
+  kalenderConnection.sendRequest(yearAndMonth);
 }
 
 void updateHeight() {

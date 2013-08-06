@@ -47,6 +47,7 @@ class KalenderConnection {
           });
         } else if (a['data'].containsKey('text')) {
           //it's a pause
+          //TODO: add a type for the messages, x_summary has 'text' too!
           kalender.xpauses.where((x) => x.time == DateTime.parse(a['time'])).toSet().forEach((x) {
               x.name = a['data']['name'];
               x.text = a['data']['text'];
