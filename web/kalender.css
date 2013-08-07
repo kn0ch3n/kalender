@@ -68,6 +68,10 @@ x-pause textarea {
   width: 240px;
 }
 
+x-summary textarea {
+  width: 270px;
+}
+
 input[type="date"] {
   width: 160px;
   margin: 2px;

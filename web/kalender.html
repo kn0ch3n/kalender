@@ -11,12 +11,13 @@
     <link rel="import" href="package:widget/components/collapse.html">
     <link rel="import" href="./x_appointment.html">
     <link rel="import" href="./x_pause.html">
+    <link rel="import" href="./x_summary.html">
   </head>
   <body>
     <div id="navigation" class="sidebar">
       <h1>Kalender</h1>
       <input type="date" on-change="dateChanged()" bind-value="selectedDate"> <br /><br />
-      Nächste freie Termine: <img src="img/reload.png" class="clickable" on-click="updateNextFreeSpots()">
+      Nächste freie Termine: <img src="out/img/reload.png" class="clickable" on-click="updateNextFreeSpots()">
       <div>
         <ul id="next-free-spots">
         </ul>

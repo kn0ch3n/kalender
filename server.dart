@@ -57,55 +57,58 @@ class KalenderHandler {
     conn.listen((message) {
       print('new ws msg: $message');
       var msgObject = json.parse(message);
-      
-      if(msgObject["time"].length == 7) {
-        
-        print("That's a request for a month!");
-        
-        // Answer with all the appointments in that month
-        List<String> appointments = [];
-        print("Connecting to ${db.serverConfig.host}:${db.serverConfig.port}");
-        db.open().then((o){
-          collection = db.collection('kalender_appointments');
-          print("searching matches in time for ${msgObject['time']}");
-          collection.find(where.match("time", msgObject['time'])).each((v) {
-            appointments.add(v);
-          }).then((_) {
-            print("Sending appointments to client: $appointments");
-            queue(() => conn.add(json.stringify(appointments)));
+      if (msgObject is Map && msgObject.containsKey('mtype') && msgObject['time'] != null) {
+        if(msgObject["mtype"] == "request") {
+          print("That's a request for a month!");
+          // Answer with all the appointments in that month
+          List<String> appointments = [];
+          print("Connecting to ${db.serverConfig.host}:${db.serverConfig.port}");
+          db.open().then((o){
+            collection = db.collection('kalender_appointments');
+            print("searching matches in time for ${msgObject['time']}");
+            collection.find(where.match("time", msgObject['time'])).each((v) {
+              appointments.add(v);
+            }).then((_) {
+              print("Sending appointments to client: $appointments");
+              queue(() => conn.add(json.stringify({'mtype': 'month', 'data': appointments})));
+            });
           });
-        });
-        
-      } else {
-        
-        print("That's an appointment to save and forward to other clients!");
-        
-        // save in database
-        print("Connecting to ${db.serverConfig.host}:${db.serverConfig.port}");
-        db.open().then((o){
-          collection = db.collection('kalender_appointments');
-          db.ensureIndex("kalender_appointments", keys: {"time": 1}, unique: true);
-          print("Inserting $msgObject into kalender_appointments");
-          collection.findOne({"time": msgObject["time"]}).then((v) {
-            if(v != null) {
-              //print("Record found: $v");
-              v["data"] = msgObject["data"];
-              collection.save(v);
-            } else {
-              //print("Creating new Record: $msgObject");
-              collection.insert(msgObject);
+          
+        } else if(msgObject["mtype"] == "appointment" || msgObject["mtype"] == "pause" || msgObject["mtype"] == "summary") {
+          
+          print("That's an entry to save and forward to other clients!");
+          
+          // save in database
+          print("Connecting to ${db.serverConfig.host}:${db.serverConfig.port}");
+          db.open().then((o){
+            collection = db.collection('kalender_appointments');
+            db.ensureIndex("kalender_appointments", keys: {"time": 1}, unique: true);
+            print("Inserting $msgObject into kalender_appointments");
+            collection.findOne({"time": msgObject["time"]}).then((v) {
+              if(v != null) {
+                //print("Record found: $v");
+                v["data"] = msgObject["data"];
+                collection.save(v);
+              } else {
+                //print("Creating new Record: $msgObject");
+                collection.insert(msgObject);
+              }
+            });
+          });
+  
+          // forward message to other clients
+          webSocketConnections.forEach((connection) {
+            if (conn != connection) {
+              print('queued msg to be sent');
+              queue(() => connection.add(message));
             }
           });
-        });
-
-        // forward message to other clients
-        webSocketConnections.forEach((connection) {
-          if (conn != connection) {
-            print('queued msg to be sent');
-            queue(() => connection.add(message));
-          }
-        });
-        //time('send to isolate', () => log.log(message));
+          //time('send to isolate', () => log.log(message));
+        } else {
+          print("Unknown mtype: ${msgObject['mtype']}");
+        }
+      } else {
+        print("Message has wrong format... discarded!");
       }
     }, onDone: () => webSocketConnections.remove(conn),
       onError: (e) => webSocketConnections.remove(conn)

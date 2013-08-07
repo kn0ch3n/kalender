@@ -10,7 +10,9 @@ import 'kalender_connection.dart';
 class XSummary extends WebComponent {
   static List<XSummary> dirtySummaries = new List<XSummary>();
   static KalenderConnection connection;
+  
   DateTime time;
+  
   @observable Map _data;
   String get text => _data['text'];
   set text(value) => _data['text'] = value;
@@ -27,10 +29,11 @@ class XSummary extends WebComponent {
     _data = toObservable({
       'text': null
     });
+    //valueChanged();
   }
 
   valueChanged() {
     dirtySummaries.add(this);
-    connection.send(time, _data);
+    connection.send('summary', time, _data);
   }
 }

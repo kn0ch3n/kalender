@@ -4,6 +4,7 @@ import 'dart:html';
 import 'package:web_ui/web_ui.dart';
 import 'x_appointment.dart';
 import 'x_pause.dart';
+import 'x_summary.dart';
 import 'dart:json' as JSON;
 import 'dart:async';
 import 'kalender_connection.dart';
@@ -23,8 +24,9 @@ String monthName;
 String yearAndMonth;
 int maxDays = 31;
 int columnWidth = 300;
-List<XAppointment> xappointments = new List<XAppointment>();
+Map<DateTime, XAppointment> xappointments = new Map<DateTime, XAppointment>();
 List<XPause> xpauses = new List<XPause>();
+List<XSummary> xsummaries = new List<XSummary>();
 
 void main() {
   ParagraphElement statusElem = query('#status-area');
@@ -32,6 +34,7 @@ void main() {
   kalenderConnection = new KalenderConnection("ws://127.0.0.1:1337/ws");
   XAppointment.connection = kalenderConnection;
   XPause.connection = kalenderConnection;
+  XSummary.connection = kalenderConnection;
   selectedDate = toDateString(new DateTime.now());
   setupUI();
 
@@ -58,6 +61,7 @@ void setupUI() {
     var column = query("#termine_$id");
     appointmentColumns.add(column);
     if (column != null) {
+      xsummaries.add(summaryCreator(new DateTime(year, month, i), column));
       for (int h = 8; h <= 17; h++) {
         for (int m = 0; m <= 40; m += 20) {
           DateTime t = new DateTime(year, month, i, h, m);
@@ -66,7 +70,7 @@ void setupUI() {
           String id = i > 9 ? i.toString() : "0" + i.toString();
           int x = ((h-8)*3 + (m/20) + 1).toInt();
           id += x > 9 ? x.toString() : "0" + x.toString();
-          xappointments.add(appointmentCreator(t, id, column));
+          xappointments[t] = (appointmentCreator(t, id, column));
         }
       }
     }
@@ -84,6 +88,14 @@ XAppointment appointmentCreator(DateTime time, String id, var parent) {
 
 XPause pauseCreator(DateTime time, var parent) {
   var obj = new XPause(time);
+  var lifecycleCaller = new ComponentItem(obj)..create();
+  parent.children.add(obj.host);
+  lifecycleCaller.insert();
+  return obj;
+}
+
+XSummary summaryCreator(DateTime time, var parent) {
+  var obj = new XSummary(time);
   var lifecycleCaller = new ComponentItem(obj)..create();
   parent.children.add(obj.host);
   lifecycleCaller.insert();
@@ -137,7 +149,7 @@ void updateView() {
     }
   }
   // Change the times of the XAppointment instances
-  for (XAppointment x in xappointments) {
+  for (XAppointment x in xappointments.values) {
     x.time = DateTime.parse(selectedDate.substring(0, 7) + x.time.toString().substring(7));
   }
   // Change the times of the XPause instances
@@ -160,9 +172,18 @@ void updateNextFreeSpots() {
   print("updating free spots");
   var nextFreeSpots = query("#next-free-spots");
   nextFreeSpots.children.clear();
-  xappointments.where((x) {
+  var candidates = xappointments.values.where((x) {
     return x.time.isAfter(new DateTime.now()) && x.isEmpty();
-  }).toList().take(30).forEach((a) {
+  }).toList();
+  candidates.sort((XAppointment a, XAppointment b) {
+    if (a.time == b) {
+      return 0;
+    } else if (a.time.isAfter(b.time)) {
+      return 1;
+    } else {
+      return -1;
+    }});
+  candidates.take(30).forEach((a) {
     var li = new LIElement();
     li.text = "$a";
     nextFreeSpots.children.add(li);
@@ -207,7 +228,7 @@ extend(XAppointment source) {
   while(doAgain) {
     doAgain = false;
     if(nextId != null) {
-      xappointments.where((a) => a.id == nextId).toSet().forEach((a) {
+      xappointments.values.where((a) => a.id == nextId).toSet().forEach((a) {
         if(a.name == source.name && a.number == source.number && a.type == source.type && a.color == source.color) doAgain = true;
         else {
           a.name = source.name;

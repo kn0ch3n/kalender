@@ -34,7 +34,7 @@ class XPause extends WebComponent {
       'name': null,
       'text': null
     });
-    //print("XPause cleared: " + time.toString());
+    //valueChanged();
   }
   
   String timeForHeading(DateTime t) {
@@ -48,6 +48,6 @@ class XPause extends WebComponent {
 
   valueChanged() {
     dirtyPauses.add(this);
-    connection.send(time, _data);
+    connection.send('pause', time, _data);
   }
 }

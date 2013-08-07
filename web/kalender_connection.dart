@@ -5,6 +5,7 @@ import 'dart:json' as JSON;
 import 'dart:async';
 import 'x_appointment.dart';
 import 'x_pause.dart';
+import 'x_summary.dart';
 import 'kalender.dart' as kalender;
 
 StatusArea statusArea;
@@ -18,72 +19,50 @@ class KalenderConnection {
     _init();
   }
 
-  send(DateTime time, Map data) {
-    var encoded = JSON.stringify({'time': time.toString(), 'data': data});
+  send(String type, DateTime time, Map data) {
+    var encoded = JSON.stringify({'mtype': type, 'time': time.toString(), 'data': data});
     _sendEncodedMessage(encoded);
   }
   
   sendRequest(String month) {
-    var encoded = JSON.stringify({'time': month.toString()});
+    var encoded = JSON.stringify({'mtype': 'request', 'time': month.toString()});
     _sendEncodedMessage(encoded);
   }
 
-  _receivedEncodedMessage(String encodedMessage) {
+  _receivedEncodedMessage(String encodedMessage, {bool updateNextFreeSpots: true}) {
     var message = JSON.parse(encodedMessage);
-    if(message is List) {
-      print("Received a list (a whole month): $message");
-      
-      message.forEach((a) {
-        if(a['data'].containsKey('number')) {
-          // it's an appointment
-          kalender.xappointments.where((x) => x.time == DateTime.parse(a['time'])).toSet().forEach((x) {
-              x.name = a['data']['name'];
-              x.number = a['data']['number'];
-              x.type = a['data']['type'];
-              x.color = a['data']['color'];
-              XAppointment.dirtyAppointments.add(x);
-          });
-        } else if (a['data'].containsKey('text')) {
-          //it's a pause
-          //TODO: add a type for the messages, x_summary has 'text' too!
-          kalender.xpauses.where((x) => x.time == DateTime.parse(a['time'])).toSet().forEach((x) {
-              x.name = a['data']['name'];
-              x.text = a['data']['text'];
-              XPause.dirtyPauses.add(x);
-          });
-        }
-      });
-    }
+    //print("Received message: $message");
     
-    if (message is Map) {
-      if (message['data'].containsKey('number')) {
-        print("Received a map (an appointment): $message");
-        
-        if (message['time'].substring(0, 7) == kalender.yearAndMonth) {
-          // It's in the selected month, let's do something
-          kalender.xappointments.where((x) => x.time == DateTime.parse(message['time'])).toSet().forEach((x) {
-            x.name = message['data']['name'];
-            x.number = message['data']['number'];
-            x.type = message['data']['type'];
-            x.color = message['data']['color'];
-            XAppointment.dirtyAppointments.add(x);
-          });
-        }
-      } else if (message['data'].containsKey('text')){
-        print("Received a map (a pause): $message");
-
-        if (message['time'].substring(0, 7) == kalender.yearAndMonth) {
-          // It's in the selected month, let's do something
-          kalender.xpauses.where((x) => x.time == DateTime.parse(message['time'])).toSet().forEach((x) {
-            x.name = message['data']['name'];
-            x.text = message['data']['text'];
-            XPause.dirtyPauses.add(x);
-          });
-        }
+    if (message is Map && message.containsKey('mtype')) {
+      if (message['mtype'] == 'month') {
+        print("Received a month message: $message");
+        message['data'].forEach((m) => _receivedEncodedMessage(JSON.stringify(m), updateNextFreeSpots: false));
+        kalender.updateNextFreeSpots();
+      } else if (message['mtype'] == 'appointment') {
+        kalender.xappointments[DateTime.parse(message['time'])]
+          ..name = message['data']['name']
+          ..number = message['data']['number']
+          ..type = message['data']['type']
+          ..color = message['data']['color']
+          ..setDirty();
+        if (updateNextFreeSpots) kalender.updateNextFreeSpots();
+      } else if (message['mtype'] == 'pause') {
+        kalender.xpauses.where((x) => x.time == DateTime.parse(message['time'])).toSet().forEach((x) {
+          x.name = message['data']['name'];
+          x.text = message['data']['text'];
+          XPause.dirtyPauses.add(x);
+        });
+      } else if (message['mtype'] == 'summary') {
+        kalender.xsummaries.where((x) => x.time == DateTime.parse(message['time'])).toSet().forEach((x) {
+          x.text = message['data']['text'];
+          XSummary.dirtySummaries.add(x);
+      });
+      } else {
+        print("Unknown mtype: ${message['mtype']}");
       }
+    } else {
+      print("Message has wrong format... discarded!");
     }
-
-    kalender.updateNextFreeSpots();
   }
 
   _sendEncodedMessage(String encodedMessage) {

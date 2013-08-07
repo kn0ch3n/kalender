@@ -116,7 +116,7 @@ class XPause extends WebComponent with Observable  {
       'name': null,
       'text': null
     });
-    //print("XPause cleared: " + time.toString());
+    //valueChanged();
   }
   
   String timeForHeading(DateTime t) {
@@ -130,7 +130,7 @@ class XPause extends WebComponent with Observable  {
 
   valueChanged() {
     dirtyPauses.add(this);
-    connection.send(time, _data);
+    connection.send('pause', time, _data);
   }
 }
 //# sourceMappingURL=x_pause.dart.map
