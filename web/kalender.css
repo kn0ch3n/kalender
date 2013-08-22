@@ -57,9 +57,13 @@ h1, p {
 }
 
 input[type="text"], input[type="tel"], select {
-  width: 210px;
+  width: 190px;
   margin: 2px;
   padding: 0px 2px;
+}
+
+select {
+  width: 196px;
 }
 
 x-pause textarea {

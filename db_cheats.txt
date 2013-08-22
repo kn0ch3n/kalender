@@ -1,3 +1,5 @@
+
+
 //reload database from test.json
 db.kalender_appointments.drop()
 mongoimport --db kalender_appointments --collection kalender_appointments --file test.json 

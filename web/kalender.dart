@@ -23,7 +23,7 @@ String yearAndMonth;
 int startingYear;
 int startingMonth;
 int maxDays = 31;
-int columnWidth = 300;
+int columnWidth = 326; //300 + 2*12 (padding) + 2*1 (border)
 Map<DateTime, XAppointment> xappointments = new Map<DateTime, XAppointment>();
 List<XPause> xpauses = new List<XPause>();
 List<XSummary> xsummaries = new List<XSummary>();
@@ -113,7 +113,7 @@ void dateChanged() {
   }
   if(selectedDate.length >= 7) {
     //scroll to the right day
-    document.body.scrollLeft = (int.parse(selectedDate.substring(8, 10)) - 1) * columnWidth + 66;
+    document.body.scrollLeft = (int.parse(selectedDate.substring(8, 10)) - 1) * columnWidth + 76;
     lastSelectedDate = selectedDate;
   }
 }
