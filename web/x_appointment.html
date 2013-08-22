@@ -17,7 +17,7 @@
             </div>
             <img src="img/v.png" class="clickable" style="margin-left: -40px" on-click="extend()">
             <input type="tel" placeholder="Nummer" bind-value="number" on-change="valueChanged()"> <br />
-            <img src="img/x.png" class="clickable" style="margin-left: -40px" on-click="clear()">
+            <img src="img/x.png" class="clickable" style="margin-left: -40px" on-click="clear(save: true)">
             <select template iterate="t in types" bind-selected-index="type" on-change="valueChanged()">
               <option>{{ t }}</option>
             </select>

@@ -12,16 +12,14 @@ import 'package:web_ui/web_ui.dart';
 import 'x_appointment.dart';
 import 'x_pause.dart';
 import 'x_summary.dart';
-import 'dart:json' as JSON;
 import 'dart:async';
 import 'kalender_connection.dart';
-import 'dart:math';
-import 'dart:isolate';
 
 
 // Original code
 
 
+final String connectionPath = "ws://127.0.0.1:1337/ws";
 final List<String> monthNames = ["Jänner", "Februar", "März", "April", "Mai", "Juni", 
                                  "Juli", "August", "September", "Oktober", "November", "Dezember"];
 final List<String> weekdaysShort = ["Mo", "Di", "Mi", "Do", "Fr", "Sa", "So"];
@@ -33,6 +31,8 @@ String lastSelectedDate;
 int currentDaysInMonth;
 String monthName;
 String yearAndMonth;
+int startingYear;
+int startingMonth;
 int maxDays = 31;
 int columnWidth = 300;
 Map<DateTime, XAppointment> xappointments = new Map<DateTime, XAppointment>();
@@ -42,13 +42,13 @@ List<XSummary> xsummaries = new List<XSummary>();
 void main() {
   ParagraphElement statusElem = query('#status-area');
   statusArea = new StatusArea(statusElem);
-  kalenderConnection = new KalenderConnection("ws://127.0.0.1:1337/ws");
+  kalenderConnection = new KalenderConnection(connectionPath);
   XAppointment.connection = kalenderConnection;
   XPause.connection = kalenderConnection;
   XSummary.connection = kalenderConnection;
   selectedDate = toDateString(new DateTime.now());
   setupUI();
-
+  
   // Listeners
   document.body.onMouseWheel.listen((WheelEvent e) {
     e.preventDefault();
@@ -67,18 +67,20 @@ void setupUI() {
   termineDiv = query("#termine");
   int year = int.parse(selectedDate.substring(0, 4));
   int month = int.parse(selectedDate.substring(5, 7));
+  startingYear = year;
+  startingMonth = month;
   for (int i = 1; i <= maxDays; i++) {
-    var id = i.toString().length > 1 ? i.toString() : "0" + i.toString();
+    String id = i > 9 ? i.toString() : "0" + i.toString();
     var column = query("#termine_$id");
     appointmentColumns.add(column);
     if (column != null) {
       xsummaries.add(summaryCreator(new DateTime(year, month, i), column));
       for (int h = 8; h <= 17; h++) {
         for (int m = 0; m <= 40; m += 20) {
+          String id = i > 9 ? i.toString() : "0" + i.toString();
           DateTime t = new DateTime(year, month, i, h, m);
           if (h == 12 && m == 0) xpauses.add(pauseCreator(t, column));
           if (h == 12 || h == 13) continue;
-          String id = i > 9 ? i.toString() : "0" + i.toString();
           int x = ((h-8)*3 + (m/20) + 1).toInt();
           id += x > 9 ? x.toString() : "0" + x.toString();
           xappointments[t] = (appointmentCreator(t, id, column));
@@ -122,7 +124,7 @@ void dateChanged() {
   }
   if(selectedDate.length >= 7) {
     //scroll to the right day
-    document.body.scrollLeft = (int.parse(selectedDate.substring(8, 10)) - 1) * columnWidth;
+    document.body.scrollLeft = (int.parse(selectedDate.substring(8, 10)) - 1) * columnWidth + 66;
     lastSelectedDate = selectedDate;
   }
 }
@@ -176,7 +178,7 @@ void updateView() {
 
 void updateHeight() {
   print("TODO: fix updating the height so it actually works...");
-  query("#termine").style.height = (window.innerHeight).toString() + "px";
+  query("#termine").style.height = "1000px";
 }
 
 void updateNextFreeSpots() {
@@ -233,21 +235,25 @@ int daysInMonth(String dateString) {
 }
 
 extend(XAppointment source) {
+  print("extend $source");
   var nextId = getNextId(source.id);
+  print("nextId: $nextId");
   var doAgain = true;
 
   while(doAgain) {
     doAgain = false;
     if(nextId != null) {
       xappointments.values.where((a) => a.id == nextId).toSet().forEach((a) {
-        if(a.name == source.name && a.number == source.number && a.type == source.type && a.color == source.color) doAgain = true;
-        else {
-          a.name = source.name;
-          a.number = source.number;
-          a.type = source.type;
-          a.color = source.color;
-          XAppointment.dirtyAppointments.add(a);
-          a.valueChanged();
+        if(a.isEmpty()) {
+          if(a.name == source.name && a.number == source.number && a.type == source.type && a.color == source.color) doAgain = true;
+          else {
+            a.name = source.name;
+            a.number = source.number;
+            a.type = source.type;
+            a.color = source.color;
+            XAppointment.dirtyAppointments.add(a);
+            a.valueChanged();
+          }
         }
       });
     }

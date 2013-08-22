@@ -8,6 +8,9 @@ import 'server-utils.dart';
 import 'package:mongo_dart/mongo_dart.dart';
 import 'dart:json' as json;
 
+final String host = '127.0.0.1';
+final int port = 1337;
+
 class StaticFileHandler {
   final String basePath;
 
@@ -120,7 +123,7 @@ runServer(String basePath, int port) {
   KalenderHandler kalenderHandler = new KalenderHandler(basePath);
   StaticFileHandler fileHandler = new StaticFileHandler(basePath);
   
-  HttpServer.bind('127.0.0.1', port)
+  HttpServer.bind(host, port)
     .then((HttpServer server) {
       print('listening for connections on $port');
       
@@ -141,5 +144,5 @@ runServer(String basePath, int port) {
 main() {
   var script = new File(new Options().script);
   var directory = script.directory;
-  runServer("${directory.path}/web", 1337);
+  runServer("${directory.path}/web", port);
 }

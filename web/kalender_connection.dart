@@ -39,12 +39,23 @@ class KalenderConnection {
         message['data'].forEach((m) => _receivedEncodedMessage(JSON.stringify(m), updateNextFreeSpots: false));
         kalender.updateNextFreeSpots();
       } else if (message['mtype'] == 'appointment') {
-        kalender.xappointments[DateTime.parse(message['time'])]
-          ..name = message['data']['name']
-          ..number = message['data']['number']
-          ..type = message['data']['type']
-          ..color = message['data']['color']
-          ..setDirty();
+        DateTime time = DateTime.parse(message['time']);
+        if (kalender.xappointments[time] == null) {
+          kalender.xappointments[time] =
+              kalender.xappointments[new DateTime(kalender.startingYear, kalender.startingMonth, time.day, time.hour, time.minute)]
+            ..name = message['data']['name']
+            ..number = message['data']['number']
+            ..type = message['data']['type']
+            ..color = message['data']['color']
+            ..setDirty();
+        } else {
+          kalender.xappointments[time]
+            ..name = message['data']['name']
+            ..number = message['data']['number']
+            ..type = message['data']['type']
+            ..color = message['data']['color']
+            ..setDirty();
+        }
         if (updateNextFreeSpots) kalender.updateNextFreeSpots();
       } else if (message['mtype'] == 'pause') {
         kalender.xpauses.where((x) => x.time == DateTime.parse(message['time'])).toSet().forEach((x) {

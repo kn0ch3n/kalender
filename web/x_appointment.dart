@@ -12,11 +12,11 @@ class XAppointment extends WebComponent {
   static List<XAppointment> dirtyAppointments = new List<XAppointment>();
   static KalenderConnection connection;
   String id;
-  final List<String> types = ["Frei", "Werkstatt", "Außer Haus", "Einlagen Erstversorgung", "Einlagen Folgeversorgung", 
+  final List<String> types = ["Frei", "Werkstatt", "Freihalten", "Außer Haus", "Einlagen Erstversorgung", "Einlagen Folgeversorgung", 
                               "Podologische Sohlen Erstversorgung", "Podologische Sohlen Kontrolle", "Podologische Sohlen Folgeversorgung", 
-                              "Orthop. Schuhe Erstversorgung", "Orthop. Schuhe Folgeversorgung", "Orthop. Schuhe Probe",
+                              "Schuhe Erstversorgung", "Schuhe Folgeversorgung", "Schuhe Probe",
                               "Verkürzungsausgleich Erstversorgung", "Verkürzungsausgleich Folgeversorgung"];
-  final List<String> typeImages = ["img/frei.png", "img/werkstatt.png", "img/nicht_im_haus.png", "img/ee.png", "img/ef.png",
+  final List<String> typeImages = ["img/frei.png", "img/werkstatt.png", "img/freihalten.png", "img/nicht_im_haus.png", "img/ee.png", "img/ef.png",
                                    "img/pe.png", "img/pk.png", "img/pf.png",
                                    "img/se.png", "img/sf.png", "img/sp.png", 
                                    "img/ve.png", "img/vf.png"];
@@ -46,14 +46,14 @@ class XAppointment extends WebComponent {
     });
   }
 
-  clear() {
+  clear({bool save: false}) {
     _data = toObservable({
       'name': null,
       'number': null,
       'type': 0,
       'color': "#FFFFFF"
     });
-    //valueChanged();
+    if (save) valueChanged();
   }
   
   String timeForHeading(DateTime t) {
@@ -75,9 +75,10 @@ class XAppointment extends WebComponent {
   
   valueChanged() {
     if (type == 1) color = "#FF8844";
-    else if (type == 2) color = "#FEFE99";
+    else if (type == 2) color = "#FEDC76";
+    else if (type == 3) color = "#FEFE99";
     else if (type != null) color = "#FFFFFF";
-    dirtyAppointments.add(this);
+    if (!isEmpty()) dirtyAppointments.add(this);
     connection.send('appointment', time, _data);
     kalender.updateNextFreeSpots();
     statusArea.displaySaveMessage(headingWithDate, _data);
@@ -97,9 +98,7 @@ class XAppointment extends WebComponent {
     kalender.updateHeight();
   }
   
-  bool isEmpty() {
-    return (this.name == null || this.name == "") && (this.number == null || this.number == "") && this.type == 0;
-  }
+  bool isEmpty() => (this.name == null || this.name == "") && (this.number == null || this.number == "") && this.type == 0;
   
   void setDirty() => dirtyAppointments.add(this);
   

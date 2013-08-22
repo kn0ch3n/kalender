@@ -50,12 +50,11 @@ h1, p {
   width: 300px;
   float: left;
   display: inline-block;
+  padding: 0px 12px;
 }
 input[type="text"], input[type="tel"], select {
   width: 210px;
   margin: 2px;
-}
-input[type="text"], input[type="tel"], select {
   padding: 0px 2px;
 }
 x-pause textarea {
@@ -93,6 +92,7 @@ h3 {
   cursor: pointer;
   font-family: courier;
   display: inline-block;
+  color: #000;
 }
 x-appointment .accordion-inner {
   padding: 2px;

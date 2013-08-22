@@ -1,0 +1,12 @@
+//reload database from test.json
+db.kalender_appointments.drop()
+mongoimport --db kalender_appointments --collection kalender_appointments --file test.json 
+
+
+// increase all data.type greater than 1 by 1
+db.kalender_appointments.update( 
+	{ "data.type": {$gt: 1}},
+	{ $inc: {"data.type": NumberInt(1)}},
+	{ multi: true }
+)
+
